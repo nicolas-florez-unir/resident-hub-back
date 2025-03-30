@@ -1,0 +1,43 @@
+module.exports = {
+  moduleFileExtensions: ['js', 'json', 'ts'],
+  rootDir: './',
+  testRegex: '/test/unit/.*\\.test\\.ts$',
+  transform: {
+    '^.+\\.(t|j)s$': 'ts-jest',
+  },
+  collectCoverageFrom: ['<rootDir>/src/**/*.(t|j)s'],
+  coverageDirectory: './coverage',
+  modulePaths: ['<rootDir>'],
+  testEnvironment: 'node',
+  setupFilesAfterEnv: ['<rootDir>/test/unit/unit.setup.ts'],
+  coveragePathIgnorePatterns: [
+    '<rootDir>/test/',
+    '<rootDir>/node_modules/',
+    '<rootDir>/dist/',
+    '<rootDir>/coverage/',
+    '<rootDir>/prisma/',
+    '<rootDir>/src/modules/.*\.module\.ts',
+    '<rootDir>/src/app.module.ts',
+    '<rootDir>/src/main.ts',
+    '<rootDir>/src/common/database/prisma/*',
+    '<rootDir>/src/common/env/*',
+    '<rootDir>/src/common/guards/*',
+    '<rootDir>/src/common/schemas/*',
+    '<rootDir>/src/common/decorators/*',
+    '<rootDir>/src/modules/.*/infrastructure/.*\.repository\.ts',
+    '<rootDir>/src/modules/.*/infrastructure/.*\.repository\.ts',
+  ],
+  coverageThreshold: {
+    global: {
+      branches: 100,
+      functions: 100,
+      lines: 100,
+      statements: 100,
+    },
+  },
+  moduleNameMapper: {
+    '@common/(.*)': '<rootDir>/src/common/$1',
+    '@auth/(.*)': '<rootDir>/src/modules/auth/$1',
+    '@user/(.*)': '<rootDir>/src/modules/user/$1',
+  },
+};

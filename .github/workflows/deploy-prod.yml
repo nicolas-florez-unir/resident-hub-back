@@ -1,0 +1,42 @@
+name: Deploy to Prod
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment: production
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Run tests
+        run: npm run test:all
+
+      - name: Renombrar Dockerfile
+        run: cp Dockerfile.prod Dockerfile
+
+      - name: Create .env file
+        run: |
+          touch .env.production
+          echo "APP_PORT=${{ secrets.APP_PORT }}" >> .env.production
+          echo "DATABASE_URL=${{ secrets.DATABASE_URL }}" >> .env.production
+          echo "ENCRYPT_SALT_ROUNDS=${{ secrets.ENCRYPT_SALT_ROUNDS }}" >> .env.production
+          echo "JWT_SECRET=${{ secrets.JWT_SECRET }}" >> .env.production
+          echo "NODE_ENV=production" >> .env.production
+          cat .env.production
+
+      - name: Install Railway CLI
+        run: curl -fsSL https://railway.app/install.sh | sh
+
+      - name: Deploy to Railway
+        env:
+          RAILWAY_PROJECT_ID: ${{ secrets.RAILWAY_PROJECT_ID }}
+        run: RAILWAY_TOKEN=${{ secrets.RAILWAY_DEPLOY_TOKEN }} railway up --service=resident-hub-back

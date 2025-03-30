@@ -1,0 +1,65 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider      = "prisma-client-js"
+  binaryTargets = ["native", "linux-musl-openssl-3.0.x"]
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+enum UserRole {
+  Admin
+  HouseOwner
+}
+
+model User {
+  id         Int      @id @default(autoincrement())
+  email      String   @unique
+  password   String
+  first_name String
+  last_name  String
+  phone      String
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+  role       UserRole
+
+  House       House[]
+  Condominium Condominium[]
+
+  @@map("users")
+}
+
+model Condominium {
+  id               Int      @id @default(autoincrement())
+  name             String
+  address          String
+  administrator_id Int
+  created_at       DateTime @default(now())
+  updated_at       DateTime @updatedAt
+
+  House House[]
+  User  User    @relation(fields: [administrator_id], references: [id])
+
+  @@map("condominiums")
+}
+
+model House {
+  id             Int      @id @default(autoincrement())
+  house_number   String
+  owner_id       Int
+  condominium_id Int
+  created_at     DateTime @default(now())
+  updated_at     DateTime @updatedAt
+
+  Condominium Condominium @relation(fields: [condominium_id], references: [id])
+  User        User        @relation(fields: [owner_id], references: [id])
+
+  @@map("houses")
+}
