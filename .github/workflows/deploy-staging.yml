@@ -6,7 +6,7 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    environment: test
+    environment: staging
 
     steps:
       - name: Checkout repository
