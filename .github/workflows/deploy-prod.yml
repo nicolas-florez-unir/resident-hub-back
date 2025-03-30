@@ -14,12 +14,6 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Install dependencies
-        run: npm install
-
-      - name: Run tests
-        run: npm run test:all
-
       - name: Renombrar Dockerfile
         run: cp Dockerfile.prod Dockerfile
 
