@@ -15,6 +15,16 @@ jobs:
       - name: Renombrar Dockerfile
         run: cp Dockerfile.staging Dockerfile
 
+      - name: Create .env file
+        run: |
+          touch .env.staging
+          echo "APP_PORT=${{ secrets.APP_PORT }}" >> .env.staging
+          echo "DATABASE_URL=${{ secrets.DATABASE_URL }}" >> .env.staging
+          echo "ENCRYPT_SALT_ROUNDS=${{ secrets.ENCRYPT_SALT_ROUNDS }}" >> .env.staging
+          echo "JWT_SECRET=${{ secrets.JWT_SECRET }}" >> .env.staging
+          echo "NODE_ENV=staging" >> .env.staging
+          cat .env.staging
+
       - name: Install Railway CLI
         run: curl -fsSL https://railway.app/install.sh | sh
 
