@@ -39,5 +39,6 @@ module.exports = {
     '@common/(.*)': '<rootDir>/src/common/$1',
     '@auth/(.*)': '<rootDir>/src/modules/auth/$1',
     '@user/(.*)': '<rootDir>/src/modules/user/$1',
+    '@condominium/(.*)': '<rootDir>/src/modules/condominium/$1',
   },
 };

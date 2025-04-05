@@ -10,6 +10,8 @@ services:
       - .:/usr/src/app
     ports:
       - "3000:3000"
+    environment:
+      - DATABASE_URL=mysql://root:password@mysql/resident-hub
     networks:
       - app-network
     depends_on:

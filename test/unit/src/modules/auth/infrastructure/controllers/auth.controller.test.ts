@@ -14,22 +14,25 @@ import {
   InternalServerErrorException,
   UnauthorizedException,
 } from '@nestjs/common';
-import { JwtService } from '@auth/infrastructure/jwt/jwt.service';
+import { ApplicationJwtService } from '@auth/infrastructure/jwt/application-jwt.service';
 import { JwtModule } from '@nestjs/jwt';
 import { UserLoggedPresenter } from '@auth/infrastructure/presenters/user-logged.presenter';
-import { DuplicatedEmailException } from '@user/domain/exceptions/duplicated-email.exception';
 import { CreateUserDto } from '@user/domain/dtos/CreateUserDto';
 import { GetUserByIdUseCase } from '@user/application/use-cases/get-user-by-id.use-case';
 import { UserFactory } from 'test/utils/factories/user.factory';
 import { TokenError } from '@auth/domain/error/token.error';
 import { UserNotFoundException } from '@user/domain/exceptions/user-not-found.exception';
+import { CondominiumFactory } from 'test/utils/factories/condominium.factory';
+import { UserRole } from '@user/domain/enums/UserRole.enum';
+import { UserAlreadyExistException } from '@user/domain/exceptions/user-already-exist.exception';
+import { EntityNotFoundException } from '@common/exceptions/entity-not-found.exception';
 
 describe('AuthController', () => {
   let authController: AuthController;
   let userSignUpUseCase: UserSignUpUseCase;
   let userLogInUseCase: UserLogInUseCase;
   let getUserByIdUseCase: GetUserByIdUseCase;
-  let jwtService: JwtService;
+  let applicationJwtService: ApplicationJwtService;
 
   beforeAll(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -42,7 +45,7 @@ describe('AuthController', () => {
         }),
       ],
       providers: [
-        JwtService,
+        ApplicationJwtService,
         {
           provide: UserSignUpUseCase,
           useValue: {
@@ -68,7 +71,9 @@ describe('AuthController', () => {
     userSignUpUseCase = module.get<UserSignUpUseCase>(UserSignUpUseCase);
     userLogInUseCase = module.get<UserLogInUseCase>(UserLogInUseCase);
     getUserByIdUseCase = module.get<GetUserByIdUseCase>(GetUserByIdUseCase);
-    jwtService = module.get<JwtService>(JwtService);
+    applicationJwtService = module.get<ApplicationJwtService>(
+      ApplicationJwtService,
+    );
   });
 
   describe('signUp method', () => {
@@ -76,8 +81,11 @@ describe('AuthController', () => {
       const now = new Date();
       jest.useFakeTimers().setSystemTime(now);
 
+      const condominium = CondominiumFactory.create();
+
       const request: UserSignUpRequest = {
         email: 'nflorez@gmail.com',
+        condominiumId: condominium.getId(),
         password: '123',
         firstName: 'Nicolás',
         lastName: 'Flórez',
@@ -87,6 +95,7 @@ describe('AuthController', () => {
 
       const userEntity = new UserEntity(
         1,
+        request.condominiumId,
         request.email,
         request.password,
         request.firstName,
@@ -105,14 +114,13 @@ describe('AuthController', () => {
 
       expect(executeSpy).toHaveBeenCalledWith(
         new CreateUserDto(
+          request.condominiumId,
           request.email,
           request.password,
           request.firstName,
           request.lastName,
           request.phone,
           request.role,
-          now,
-          now,
         ),
       );
 
@@ -120,7 +128,9 @@ describe('AuthController', () => {
     });
 
     it('should return the result from UserSignUpUseCase', async () => {
+      const condominium = CondominiumFactory.create();
       const request: UserSignUpRequest = {
+        condominiumId: condominium.getId(),
         email: 'nflorez@gmail.com',
         password: '123',
         firstName: 'Nicolás',
@@ -131,6 +141,7 @@ describe('AuthController', () => {
 
       const userEntity = new UserEntity(
         1,
+        request.condominiumId,
         request.email,
         request.password,
         request.firstName,
@@ -151,7 +162,9 @@ describe('AuthController', () => {
     });
 
     it('should throw an HttpException if UserSignUpUseCase throws an unknown error', async () => {
+      const condominium = CondominiumFactory.create();
       const request: UserSignUpRequest = {
+        condominiumId: condominium.getId(),
         email: 'nflorez@gmail.com',
         password: '123',
         firstName: 'Nicolás',
@@ -171,7 +184,9 @@ describe('AuthController', () => {
     });
 
     it('Should throw a ConflictException if use case throws DuplicatedEmailException', async () => {
+      const condominium = CondominiumFactory.create();
       const request: UserSignUpRequest = {
+        condominiumId: condominium.getId(),
         email: 'already_used_email@gmail.com',
         password: 'random_password',
         firstName: 'Nicolás',
@@ -183,7 +198,29 @@ describe('AuthController', () => {
       const errorMessage = 'Email is already in use';
       jest
         .spyOn(userSignUpUseCase, 'execute')
-        .mockRejectedValueOnce(new DuplicatedEmailException(errorMessage));
+        .mockRejectedValueOnce(new UserAlreadyExistException(errorMessage));
+
+      await expect(authController.signUp(request)).rejects.toThrow(
+        new ConflictException(errorMessage),
+      );
+    });
+
+    it('Should throw NotFoundException if use case throws EntityNotFoundException', async () => {
+      const condominium = CondominiumFactory.create();
+      const request: UserSignUpRequest = {
+        condominiumId: condominium.getId(),
+        email: 'already_used_email@gmail.com',
+        password: 'random_password',
+        firstName: 'Nicolás',
+        lastName: 'Flórez',
+        phone: '3058668807',
+        role: UserRole.Administrator,
+      };
+
+      const errorMessage = `User with email ${request.email} not found`;
+      jest
+        .spyOn(userSignUpUseCase, 'execute')
+        .mockRejectedValueOnce(new EntityNotFoundException(errorMessage));
 
       await expect(authController.signUp(request)).rejects.toThrow(
         new ConflictException(errorMessage),
@@ -193,6 +230,7 @@ describe('AuthController', () => {
 
   describe('login method', () => {
     it('should call UserLogInUseCase with correct parameters', async () => {
+      const condominium = CondominiumFactory.create();
       const request: UserLogInRequest = {
         email: 'test@example.com',
         password: 'password123',
@@ -200,6 +238,7 @@ describe('AuthController', () => {
 
       const userEntity = new UserEntity(
         1,
+        condominium.getId(),
         request.email,
         request.password,
         'Test',
@@ -220,6 +259,7 @@ describe('AuthController', () => {
     });
 
     it('should return the result from UserLogInUseCase', async () => {
+      const condominium = CondominiumFactory.create();
       const now = new Date();
 
       const request: UserLogInRequest = {
@@ -229,6 +269,7 @@ describe('AuthController', () => {
 
       const userEntity = new UserEntity(
         1,
+        condominium.getId(),
         request.email,
         request.password,
         'Test',
@@ -239,12 +280,16 @@ describe('AuthController', () => {
         now,
       );
 
-      const userToken = await jwtService.generateToken({
+      const userToken = applicationJwtService.generateToken({
         id: userEntity.id,
+        condominium_id: userEntity.condominiumId,
+        role: userEntity.role,
       });
 
       jest.spyOn(userLogInUseCase, 'execute').mockResolvedValueOnce(userEntity);
-      jest.spyOn(jwtService, 'generateToken').mockResolvedValueOnce(userToken);
+      jest
+        .spyOn(applicationJwtService, 'generateToken')
+        .mockReturnValue(userToken);
 
       const response = await authController.login(request);
 
@@ -297,11 +342,12 @@ describe('AuthController', () => {
 
       const fakeUser = UserFactory.create();
 
-      jest.spyOn(jwtService, 'validateToken').mockReturnValue(true);
-
-      jest
-        .spyOn(jwtService, 'decodeToken')
-        .mockResolvedValue(new Promise((resolve) => resolve({ id: 1 })));
+      jest.spyOn(applicationJwtService, 'validateToken').mockReturnValue(true);
+      jest.spyOn(applicationJwtService, 'decodeToken').mockReturnValue({
+        id: fakeUser.id,
+        condominium_id: fakeUser.condominiumId,
+        role: fakeUser.role,
+      });
 
       jest
         .spyOn(getUserByIdUseCase, 'execute')
@@ -323,7 +369,7 @@ describe('AuthController', () => {
         },
       };
 
-      jest.spyOn(jwtService, 'validateToken').mockReturnValue(false);
+      jest.spyOn(applicationJwtService, 'validateToken').mockReturnValue(false);
 
       await expect(authController.validateToken(request)).rejects.toThrow(
         new UnauthorizedException(TokenError.INVALID),
@@ -334,9 +380,13 @@ describe('AuthController', () => {
     });
 
     it('should throw an UnauthorizedException if the user does not exist', async () => {
-      const token = await jwtService.generateToken({
+      const tokenPayload = {
         id: 1,
-      });
+        condominium_id: 1,
+        role: UserRole.Administrator,
+      };
+
+      const token = await applicationJwtService.generateToken(tokenPayload);
 
       const request = {
         headers: {
@@ -344,11 +394,10 @@ describe('AuthController', () => {
         },
       };
 
-      jest.spyOn(jwtService, 'validateToken').mockReturnValue(true);
-
+      jest.spyOn(applicationJwtService, 'validateToken').mockReturnValue(true);
       jest
-        .spyOn(jwtService, 'decodeToken')
-        .mockResolvedValue(new Promise((resolve) => resolve({ id: 1 })));
+        .spyOn(applicationJwtService, 'decodeToken')
+        .mockReturnValue(tokenPayload);
 
       jest
         .spyOn(getUserByIdUseCase, 'execute')
@@ -360,8 +409,10 @@ describe('AuthController', () => {
     });
 
     it('should throw an InternalServerErrorException if an unknown error occurs', async () => {
-      const token = await jwtService.generateToken({
+      const token = await applicationJwtService.generateToken({
         id: 1,
+        condominium_id: 1,
+        role: UserRole.Administrator,
       });
 
       const request = {
@@ -370,11 +421,13 @@ describe('AuthController', () => {
         },
       };
 
-      jest.spyOn(jwtService, 'validateToken').mockReturnValue(true);
+      jest.spyOn(applicationJwtService, 'validateToken').mockReturnValue(true);
 
-      jest
-        .spyOn(jwtService, 'decodeToken')
-        .mockResolvedValue(new Promise((resolve) => resolve({ id: 1 })));
+      jest.spyOn(applicationJwtService, 'decodeToken').mockReturnValue({
+        id: 1,
+        condominium_id: 1,
+        role: UserRole.Administrator,
+      });
 
       jest
         .spyOn(getUserByIdUseCase, 'execute')

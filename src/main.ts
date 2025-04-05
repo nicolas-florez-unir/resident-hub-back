@@ -12,6 +12,10 @@ async function bootstrap() {
         path: 'health-check',
         method: RequestMethod.GET,
       },
+      {
+        path: 'private/(.*)',
+        method: RequestMethod.ALL,
+      },
     ],
   });
 

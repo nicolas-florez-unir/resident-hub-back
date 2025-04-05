@@ -9,6 +9,7 @@ import { UpdateUserUseCase } from '@user/application/use-cases/update-user.use-c
 import { UserFactory } from 'test/utils/factories/user.factory';
 import { UpdateUserRequest } from '@user/infrastructure/requests/UpdateUser.request';
 import { UserEntity } from '@user/domain/entities/User.entity';
+import { CondominiumFactory } from 'test/utils/factories/condominium.factory';
 
 describe('UserController', () => {
   let userController: UserController;
@@ -40,7 +41,7 @@ describe('UserController', () => {
 
   describe('getUserInfo', () => {
     it('should return user info when user exists', async () => {
-      const mockUser: any = { id: '123', name: 'John Doe' };
+      const mockUser = UserFactory.create();
       const mockUserFromRequest: UserFromRequestInterface = { id: 1 };
 
       userRepository.findById.mockResolvedValue(mockUser);
@@ -65,6 +66,7 @@ describe('UserController', () => {
 
   describe('updateUser', () => {
     it('should return updated user info when user exists', async () => {
+      const mockCondominium = CondominiumFactory.create();
       const mockUser = UserFactory.create({ id: 1, email: 'old@email.com' });
       const mockUserFromRequest: UserFromRequestInterface = { id: mockUser.id };
       const updateUserRequest: UpdateUserRequest = {
@@ -77,6 +79,7 @@ describe('UserController', () => {
 
       const userUpdated = new UserEntity(
         mockUser.id,
+        mockCondominium.getId(),
         updateUserRequest.email,
         mockUser.password,
         updateUserRequest.firstName,

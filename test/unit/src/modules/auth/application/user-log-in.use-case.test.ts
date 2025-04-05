@@ -39,12 +39,13 @@ describe('UserLogInUseCase', () => {
     const password = 'password';
     const user = new UserEntity(
       1,
+      1,
       email,
       password,
       'User',
       'Test',
       '123',
-      UserRole.Admin,
+      UserRole.Administrator,
       new Date(),
       new Date(),
     );
@@ -75,12 +76,13 @@ describe('UserLogInUseCase', () => {
     const password = 'password';
     const user = new UserEntity(
       1,
+      1,
       email,
       bcrypt.hashSync('wrongpassword', 10),
       'User',
       'Test',
       '123',
-      UserRole.Admin,
+      UserRole.Administrator,
       new Date(),
       new Date(),
     );

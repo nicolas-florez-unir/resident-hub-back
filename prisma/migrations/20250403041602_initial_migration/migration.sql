@@ -1,14 +1,15 @@
 -- CreateTable
 CREATE TABLE `users` (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
+    `condominium_id` INTEGER NOT NULL,
     `email` VARCHAR(191) NOT NULL,
     `password` VARCHAR(191) NOT NULL,
     `first_name` VARCHAR(191) NOT NULL,
     `last_name` VARCHAR(191) NOT NULL,
     `phone` VARCHAR(191) NOT NULL,
+    `role` ENUM('administrator', 'house_owner') NOT NULL,
     `created_at` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updated_at` DATETIME(3) NOT NULL,
-    `role` ENUM('Admin', 'HouseOwner') NOT NULL,
 
     UNIQUE INDEX `users_email_key`(`email`),
     PRIMARY KEY (`id`)
@@ -19,7 +20,7 @@ CREATE TABLE `condominiums` (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
     `name` VARCHAR(191) NOT NULL,
     `address` VARCHAR(191) NOT NULL,
-    `administrator_id` INTEGER NOT NULL,
+    `administrator_id` INTEGER NULL,
     `created_at` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updated_at` DATETIME(3) NOT NULL,
 
@@ -39,7 +40,7 @@ CREATE TABLE `houses` (
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- AddForeignKey
-ALTER TABLE `condominiums` ADD CONSTRAINT `condominiums_administrator_id_fkey` FOREIGN KEY (`administrator_id`) REFERENCES `users`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE `users` ADD CONSTRAINT `users_condominium_id_fkey` FOREIGN KEY (`condominium_id`) REFERENCES `condominiums`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE `houses` ADD CONSTRAINT `houses_condominium_id_fkey` FOREIGN KEY (`condominium_id`) REFERENCES `condominiums`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;

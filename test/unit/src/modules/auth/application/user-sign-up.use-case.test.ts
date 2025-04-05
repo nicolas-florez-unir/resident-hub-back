@@ -4,18 +4,30 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { UserRepository } from '@user/domain/repositories/user.repository';
 import { CreateUserDto } from '@user/domain/dtos/CreateUserDto';
 import { CreateUserUseCase } from '@user/application/use-cases/create-user.use-case';
+import { GetCondominiumByIdUseCase } from '@condominium/application/use-cases/get-condominium-by-id.use-case';
+import { CondominiumRepository } from '@condominium/domain/repositories/condominium.repository';
+import { CondominiumFactory } from 'test/utils/factories/condominium.factory';
+import { UserFactory } from 'test/utils/factories/user.factory';
 
 describe('UserSignUpUseCase', () => {
   let useCase: UserSignUpUseCase;
   let userRepository: jest.Mocked<UserRepository>;
+  let condominiumRepository: jest.Mocked<CondominiumRepository>;
 
   beforeAll(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
+        GetCondominiumByIdUseCase,
         {
           provide: UserRepository,
           useValue: {
             create: jest.fn(),
+          },
+        },
+        {
+          provide: CondominiumRepository,
+          useValue: {
+            findById: jest.fn(),
           },
         },
         CreateUserUseCase,
@@ -25,41 +37,29 @@ describe('UserSignUpUseCase', () => {
 
     useCase = module.get<UserSignUpUseCase>(UserSignUpUseCase);
     userRepository = module.get<jest.Mocked<UserRepository>>(UserRepository);
+    condominiumRepository = module.get<jest.Mocked<CondominiumRepository>>(
+      CondominiumRepository,
+    );
   });
 
   it('should return true', async () => {
-    const userData = {
-      email: 'user@email.com',
-      password: '123',
-      firstName: 'John',
-      lastName: 'Doe',
-      phone: '3058668807',
-      role: 'Admin',
-    };
+    const condominium = CondominiumFactory.create();
+    condominiumRepository.findById.mockResolvedValue(condominium);
 
-    userRepository.create.mockResolvedValue(
-      new UserEntity(
-        1,
-        userData.email,
-        userData.password,
-        userData.firstName,
-        userData.lastName,
-        userData.phone,
-        userData.role as any,
-        new Date(),
-        new Date(),
-      ),
-    );
+    const user = UserFactory.create({
+      condominiumId: condominium.getId(),
+    });
+
+    userRepository.create.mockResolvedValue(user);
 
     const dto = new CreateUserDto(
-      userData.email,
-      userData.password,
-      userData.firstName,
-      userData.lastName,
-      userData.phone,
-      userData.role as any,
-      new Date(),
-      new Date(),
+      1,
+      user.email,
+      user.password,
+      user.firstName,
+      user.lastName,
+      user.phone,
+      user.role as any,
     );
 
     const useCaseResult = await useCase.execute(dto);
@@ -68,11 +68,13 @@ describe('UserSignUpUseCase', () => {
     expect(userRepository.create).toHaveBeenCalledWith(dto);
 
     expect(useCaseResult).toBeInstanceOf(UserEntity);
-    expect(useCaseResult.email).toBe(userData.email);
-    expect(useCaseResult.firstName).toBe(userData.firstName);
-    expect(useCaseResult.lastName).toBe(userData.lastName);
-    expect(useCaseResult.phone).toBe(userData.phone);
-    expect(useCaseResult.role).toBe(userData.role);
-    expect(useCaseResult.password).toBe(userData.password);
+    expect(useCaseResult.email).toBe(user.email);
+    expect(useCaseResult.firstName).toBe(user.firstName);
+    expect(useCaseResult.lastName).toBe(user.lastName);
+    expect(useCaseResult.phone).toBe(user.phone);
+    expect(useCaseResult.role).toBe(user.role);
+    expect(useCaseResult.password).toBe(user.password);
+
+    jest.clearAllMocks();
   });
 });

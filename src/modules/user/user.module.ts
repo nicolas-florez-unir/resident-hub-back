@@ -8,10 +8,12 @@ import { GetUserByIdUseCase } from './application/use-cases/get-user-by-id.use-c
 import { CreateUserUseCase } from './application/use-cases/create-user.use-case';
 import { GetUserByEmailUseCase } from './application/use-cases/get-user-by-email.use-case';
 import { UpdateUserUseCase } from './application/use-cases/update-user.use-case';
+import { ApplicationJwtService } from '@auth/infrastructure/jwt/application-jwt.service';
 
 @Module({
   controllers: [UserController],
   providers: [
+    ApplicationJwtService,
     PrismaService,
     GetUserByIdUseCase,
     CreateUserUseCase,

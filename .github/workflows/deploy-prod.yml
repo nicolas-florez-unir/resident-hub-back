@@ -24,6 +24,8 @@ jobs:
           echo "DATABASE_URL=${{ secrets.DATABASE_URL }}" >> .env.production
           echo "ENCRYPT_SALT_ROUNDS=${{ secrets.ENCRYPT_SALT_ROUNDS }}" >> .env.production
           echo "JWT_SECRET=${{ secrets.JWT_SECRET }}" >> .env.production
+          echo "DEFAULT_USER_PASSWORD=${{ secrets.DEFAULT_USER_PASSWORD }}" >> .env.production
+          echo "PRIVATE_API_SECRET=${{ secrets.PRIVATE_API_SECRET }}" >> .env.production
           echo "NODE_ENV=production" >> .env.production
           cat .env.production
 

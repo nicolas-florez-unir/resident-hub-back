@@ -3,6 +3,7 @@ import { UpdateUserUseCase } from '@user/application/use-cases/update-user.use-c
 import { UserRepository } from '@user/domain/repositories/user.repository';
 import { UserEntity } from '@user/domain/entities/User.entity';
 import { UserFactory } from 'test/utils/factories/user.factory';
+import { UserNotFoundException } from '@user/domain/exceptions/user-not-found.exception';
 
 describe('UpdateUserUseCase', () => {
   let updateUserUseCase: UpdateUserUseCase;
@@ -45,5 +46,15 @@ describe('UpdateUserUseCase', () => {
     await expect(updateUserUseCase.execute(mockUser)).rejects.toThrow(
       'Update failed',
     );
+  });
+
+  it("should throw an UserNotFoundException if user doesn't exist", async () => {
+    // Simula que el repositorio devuelve null (usuario no encontrado)
+    mockUserRepository.update.mockResolvedValue(null);
+
+    await expect(updateUserUseCase.execute(mockUser)).rejects.toThrow(
+      new UserNotFoundException(`User with id ${mockUser.id} not found`),
+    );
+    expect(mockUserRepository.update).toHaveBeenCalledWith(mockUser);
   });
 });

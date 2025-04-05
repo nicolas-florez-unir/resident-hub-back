@@ -1,4 +1,3 @@
-import { envs } from '@common/env/env.validation';
 import {
   Injectable,
   CanActivate,
@@ -26,9 +25,7 @@ export class AuthGuard implements CanActivate {
     }
 
     try {
-      const payload = this.jwtService.verify(token, {
-        secret: envs.jwtSecret,
-      });
+      const payload = this.jwtService.verify(token);
 
       const tokenValidation = UserFromRequestSchema.validate(payload);
 

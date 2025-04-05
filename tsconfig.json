@@ -21,6 +21,7 @@
       "@common/*": ["src/common/*"],
       "@auth/*": ["src/modules/auth/*"],
       "@user/*": ["src/modules/user/*"],
+      "@condominium/*": ["src/modules/condominium/*"],
     }
   },
   "watchOptions": {

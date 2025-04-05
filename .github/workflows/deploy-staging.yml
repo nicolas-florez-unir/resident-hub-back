@@ -22,6 +22,8 @@ jobs:
           echo "DATABASE_URL=${{ secrets.DATABASE_URL }}" >> .env.staging
           echo "ENCRYPT_SALT_ROUNDS=${{ secrets.ENCRYPT_SALT_ROUNDS }}" >> .env.staging
           echo "JWT_SECRET=${{ secrets.JWT_SECRET }}" >> .env.staging
+          echo "DEFAULT_USER_PASSWORD=${{ secrets.DEFAULT_USER_PASSWORD }}" >> .env.staging
+          echo "PRIVATE_API_SECRET=${{ secrets.PRIVATE_API_SECRET }}" >> .env.staging
           echo "NODE_ENV=staging" >> .env.staging
           cat .env.staging
 

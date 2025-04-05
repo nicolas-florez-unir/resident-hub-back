@@ -19,6 +19,6 @@ export class UpdateUserRequest {
   phone: string;
 
   @IsString()
-  @IsIn(['Admin', 'HouseOwner'])
+  @IsIn([UserRole.Administrator, UserRole.HouseOwner])
   role: UserRole;
 }

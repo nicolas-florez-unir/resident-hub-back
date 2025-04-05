@@ -9,8 +9,8 @@ export class UserPresenter {
       lastName: userEntity.lastName,
       phone: userEntity.phone,
       role: userEntity.role,
-      createdAt: userEntity.createdAt,
-      updatedAt: userEntity.updatedAt,
+      createdAt: userEntity.createdAt.toString(),
+      updatedAt: userEntity.updatedAt.toString(),
     };
   }
 }

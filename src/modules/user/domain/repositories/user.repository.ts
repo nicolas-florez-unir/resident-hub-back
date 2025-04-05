@@ -5,5 +5,5 @@ export abstract class UserRepository {
   abstract create(dto: CreateUserDto): Promise<UserEntity>;
   abstract findByEmail(email: string): Promise<UserEntity | null>;
   abstract findById(id: number): Promise<UserEntity | null>;
-  abstract update(user: UserEntity): Promise<UserEntity>;
+  abstract update(user: UserEntity): Promise<UserEntity | null>;
 }

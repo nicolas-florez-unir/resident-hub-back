@@ -7,14 +7,14 @@ import {
   HttpException,
   HttpStatus,
   InternalServerErrorException,
+  NotFoundException,
   Post,
   Request,
   UnauthorizedException,
 } from '@nestjs/common';
 
-import { DuplicatedEmailException } from '@user/domain/exceptions/duplicated-email.exception';
 import { InvalidCredentialsException } from '@auth/domain/exceptions/invalid-credentials.exception';
-import { JwtService } from '../jwt/jwt.service';
+import { ApplicationJwtService } from '../jwt/application-jwt.service';
 import { UserLoggedPresenter } from '../presenters/user-logged.presenter';
 import { UserLogInRequest } from '../requests/UserLogIn.request';
 import { UserLogInUseCase } from '@auth/application/use-cases/user-log-in.use-case';
@@ -25,13 +25,15 @@ import { GetUserByIdUseCase } from '@user/application/use-cases/get-user-by-id.u
 import { CreateUserDto } from '@user/domain/dtos/CreateUserDto';
 import { UserNotFoundException } from '@user/domain/exceptions/user-not-found.exception';
 import { TokenError } from '@auth/domain/error/token.error';
+import { EntityNotFoundException } from '@common/exceptions/entity-not-found.exception';
+import { UserAlreadyExistException } from '@user/domain/exceptions/user-already-exist.exception';
 
 @Controller('auth')
 export class AuthController {
   constructor(
     private readonly userSignUpUseCase: UserSignUpUseCase,
     private readonly userLogInUseCase: UserLogInUseCase,
-    private readonly jwtService: JwtService,
+    private readonly applicationJwtService: ApplicationJwtService,
     private readonly getUserByIdUseCase: GetUserByIdUseCase,
   ) {}
 
@@ -40,22 +42,26 @@ export class AuthController {
     try {
       const newUser = await this.userSignUpUseCase.execute(
         new CreateUserDto(
+          request.condominiumId,
           request.email,
           request.password,
           request.firstName,
           request.lastName,
           request.phone,
           request.role,
-          new Date(),
-          new Date(),
         ),
       );
 
       return UserPresenter.toObject(newUser);
     } catch (error) {
-      if (error instanceof DuplicatedEmailException) {
+      if (error instanceof UserAlreadyExistException) {
         throw new ConflictException(error.message);
       }
+
+      if (error instanceof EntityNotFoundException) {
+        throw new NotFoundException(error.message);
+      }
+
       throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
     }
   }
@@ -69,7 +75,11 @@ export class AuthController {
         request.password,
       );
 
-      const token = await this.jwtService.generateToken({ id: user.id });
+      const token = this.applicationJwtService.generateToken({
+        id: user.id,
+        role: user.role,
+        condominium_id: user.condominiumId,
+      });
 
       return UserLoggedPresenter.present(user, token);
     } catch (error) {
@@ -86,10 +96,10 @@ export class AuthController {
   async validateToken(@Request() req) {
     const token = req.headers.authorization?.split('Bearer ')[1];
 
-    const isValid = this.jwtService.validateToken(token);
+    const isValid = this.applicationJwtService.validateToken(token);
     if (!isValid) throw new UnauthorizedException(TokenError.INVALID);
 
-    const decodedToken = await this.jwtService.decodeToken(token);
+    const decodedToken = this.applicationJwtService.decodeToken(token);
 
     try {
       const user = await this.getUserByIdUseCase.execute(decodedToken.id);

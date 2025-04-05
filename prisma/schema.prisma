@@ -15,23 +15,24 @@ datasource db {
 }
 
 enum UserRole {
-  Admin
-  HouseOwner
+  administrator
+  house_owner
 }
 
 model User {
-  id         Int      @id @default(autoincrement())
-  email      String   @unique
-  password   String
-  first_name String
-  last_name  String
-  phone      String
-  created_at DateTime @default(now())
-  updated_at DateTime @updatedAt
-  role       UserRole
+  id             Int      @id @default(autoincrement())
+  condominium_id Int
+  email          String   @unique
+  password       String
+  first_name     String
+  last_name      String
+  phone          String
+  role           UserRole
+  created_at     DateTime @default(now())
+  updated_at     DateTime @updatedAt
 
   House       House[]
-  Condominium Condominium[]
+  Condominium Condominium @relation(fields: [condominium_id], references: [id])
 
   @@map("users")
 }
@@ -40,12 +41,12 @@ model Condominium {
   id               Int      @id @default(autoincrement())
   name             String
   address          String
-  administrator_id Int
+  administrator_id Int?
   created_at       DateTime @default(now())
   updated_at       DateTime @updatedAt
 
   House House[]
-  User  User    @relation(fields: [administrator_id], references: [id])
+  User  User[]
 
   @@map("condominiums")
 }

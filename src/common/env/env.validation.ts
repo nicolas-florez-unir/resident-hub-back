@@ -7,6 +7,8 @@ interface EnvVars {
   DATABASE_URL: string;
   ENCRYPT_SALT_ROUNDS: number;
   JWT_SECRET: string;
+  PRIVATE_API_SECRET: string;
+  DEFAULT_USER_PASSWORD: string;
 }
 
 const envsSchema = joi
@@ -15,6 +17,8 @@ const envsSchema = joi
     DATABASE_URL: joi.string().required(),
     ENCRYPT_SALT_ROUNDS: joi.number().required(),
     JWT_SECRET: joi.string().required(),
+    PRIVATE_API_SECRET: joi.string().required(),
+    DEFAULT_USER_PASSWORD: joi.string().required(),
   })
   .unknown(true);
 
@@ -31,4 +35,6 @@ export const envs = {
   databaseUrl: envVars.DATABASE_URL,
   encryptSaltRounds: envVars.ENCRYPT_SALT_ROUNDS,
   jwtSecret: envVars.JWT_SECRET,
+  defaultUserPassword: envVars.DEFAULT_USER_PASSWORD,
+  privateApiSecret: envVars.PRIVATE_API_SECRET,
 };

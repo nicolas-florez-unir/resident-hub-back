@@ -7,19 +7,23 @@ import { UserSignUpUseCase } from '@auth/application/use-cases/user-sign-up.use-
 import { UserSignUpRequest } from '@auth/infrastructure/requests/UserSignUp.request';
 import { UserRepository } from '@user/domain/repositories/user.repository';
 import { PrismaUserRepository } from '@user/infrastructure/repositories/prisma.user.repository';
-import { UserEntity } from '@user/domain/entities/User.entity';
 import { PrismaService } from '@common/database/prisma/prisma.service';
-import { CreateUserDto } from '@user/domain/dtos/CreateUserDto';
 import { PrismaUtils } from 'test/utils/PrismaUtils';
 import { UserLogInUseCase } from '@auth/application/use-cases/user-log-in.use-case';
 import { UserLogInRequest } from '@auth/infrastructure/requests/UserLogIn.request';
 import { UserFactory } from 'test/utils/factories/user.factory';
-import { JwtService } from '@auth/infrastructure/jwt/jwt.service';
+import { ApplicationJwtService } from '@auth/infrastructure/jwt/application-jwt.service';
 import { JwtModule } from '@nestjs/jwt';
 import { UserRole } from '@user/domain/enums/UserRole.enum';
 import { GetUserByIdUseCase } from '@user/application/use-cases/get-user-by-id.use-case';
 import { CreateUserUseCase } from '@user/application/use-cases/create-user.use-case';
 import { GetUserByEmailUseCase } from '@user/application/use-cases/get-user-by-email.use-case';
+import { GetCondominiumByIdUseCase } from '@condominium/application/use-cases/get-condominium-by-id.use-case';
+import { CondominiumRepository } from '@condominium/domain/repositories/condominium.repository';
+import { PrismaCondominiumRepository } from '@condominium/infrastructure/repositories/prisma-condominium.repository';
+import { CondominiumFactory } from 'test/utils/factories/condominium.factory';
+import { UserEntity } from '@user/domain/entities/User.entity';
+import { CreateUserDto } from '@user/domain/dtos/CreateUserDto';
 
 describe('AuthController', () => {
   let app: INestApplication;
@@ -27,7 +31,7 @@ describe('AuthController', () => {
   let userRepository: UserRepository;
   let userLogInUseCase: UserLogInUseCase;
   let prismaService: PrismaService;
-  let jwtService: JwtService;
+  let applicationJwtService: ApplicationJwtService;
 
   beforeAll(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -40,15 +44,20 @@ describe('AuthController', () => {
       ],
       controllers: [AuthController],
       providers: [
-        JwtService,
+        ApplicationJwtService,
         PrismaService,
         UserSignUpUseCase,
         UserLogInUseCase,
         CreateUserUseCase,
         GetUserByEmailUseCase,
+        GetCondominiumByIdUseCase,
         {
           provide: UserRepository,
           useClass: PrismaUserRepository,
+        },
+        {
+          provide: CondominiumRepository,
+          useClass: PrismaCondominiumRepository,
         },
         GetUserByIdUseCase,
       ],
@@ -68,7 +77,9 @@ describe('AuthController', () => {
     userRepository = module.get<UserRepository>(UserRepository);
     prismaService = module.get<PrismaService>(PrismaService);
     userLogInUseCase = module.get<UserLogInUseCase>(UserLogInUseCase);
-    jwtService = module.get<JwtService>(JwtService);
+    applicationJwtService = module.get<ApplicationJwtService>(
+      ApplicationJwtService,
+    );
   });
 
   beforeEach(async () => {
@@ -92,7 +103,7 @@ describe('AuthController', () => {
               firstName: 'Nicolás',
               lastName: 'Flórez',
               phone: '3058668807',
-              role: UserRole.Admin,
+              role: UserRole.Administrator,
             },
           },
           {
@@ -102,7 +113,7 @@ describe('AuthController', () => {
               password: '123',
               lastName: 'Flórez',
               phone: '3058668807',
-              role: UserRole.Admin,
+              role: UserRole.Administrator,
             },
           },
           {
@@ -112,7 +123,7 @@ describe('AuthController', () => {
               password: '123',
               firstName: 'Nicolás',
               phone: '3058668807',
-              role: UserRole.Admin,
+              role: UserRole.Administrator,
             },
           },
           {
@@ -121,7 +132,7 @@ describe('AuthController', () => {
               email: 'nflorez@gmail.com',
               firstName: 'Nicolás',
               phone: '3058668807',
-              role: UserRole.Admin,
+              role: UserRole.Administrator,
             },
           },
         ];
@@ -134,18 +145,19 @@ describe('AuthController', () => {
       });
     });
 
-    it('should return BAD REQUEST if use case throws error', async () => {
+    it('should return BAD REQUEST if use case throws unhandled error', async () => {
       const useCaseSpy = jest
-        .spyOn(userRepository, 'create')
+        .spyOn(userSignUpUseCase, 'execute')
         .mockRejectedValue(new Error('Error'));
 
       const userSignUpRequest: UserSignUpRequest = {
+        condominiumId: 1,
         email: 'nflorez@gmail.com',
         password: '123',
         firstName: 'Nicolás',
         lastName: 'Flórez',
         phone: '3058668807',
-        role: UserRole.Admin,
+        role: UserRole.Administrator,
       };
 
       await request(app.getHttpServer())
@@ -157,30 +169,36 @@ describe('AuthController', () => {
     });
 
     it('should call UserSignUpUseCase with correct parameters', async () => {
-      const now = new Date();
-      jest.useFakeTimers().setSystemTime(now);
-
       const useCaseSpy = jest.spyOn(userSignUpUseCase, 'execute');
       const userRepositorySpy = jest.spyOn(userRepository, 'create');
 
+      const fakeCondominium = CondominiumFactory.create();
+      await prismaService.condominium.create({
+        data: {
+          id: fakeCondominium.getId(),
+          name: fakeCondominium.getName(),
+          address: fakeCondominium.getAddress(),
+        },
+      });
+
       const userSignUpRequest: UserSignUpRequest = {
+        condominiumId: fakeCondominium.getId(),
         email: 'nflorez@gmail.com',
         password: '123',
         firstName: 'Nicolás',
         lastName: 'Flórez',
         phone: '3058668807',
-        role: UserRole.Admin,
+        role: UserRole.Administrator,
       };
 
       const dto = new CreateUserDto(
+        userSignUpRequest.condominiumId,
         userSignUpRequest.email,
         userSignUpRequest.password,
         userSignUpRequest.firstName,
         userSignUpRequest.lastName,
         userSignUpRequest.phone,
         userSignUpRequest.role,
-        now,
-        now,
       );
 
       await request(app.getHttpServer())
@@ -203,21 +221,31 @@ describe('AuthController', () => {
 
       // La contraseña en base de datos debe estar encriptada
       expect(existingUser.password).not.toBe(userSignUpRequest.password);
-
-      jest.useRealTimers();
     });
 
     it('should return CONFLICT if user already exists', async () => {
-      const fakeUser = UserFactory.create();
+      const fakeCondominium = CondominiumFactory.create();
+      await prismaService.condominium.create({
+        data: {
+          id: fakeCondominium.getId(),
+          name: fakeCondominium.getName(),
+          address: fakeCondominium.getAddress(),
+        },
+      });
+
+      const fakeUser = UserFactory.create({
+        condominiumId: fakeCondominium.getId(),
+      });
       await userRepository.create(fakeUser);
 
       const userSignUpRequest: UserSignUpRequest = {
+        condominiumId: 1,
         email: fakeUser.email,
         password: '123',
         firstName: 'Nicolás',
         lastName: 'Flórez',
         phone: '3058668807',
-        role: UserRole.Admin,
+        role: UserRole.Administrator,
       };
 
       const response = await request(app.getHttpServer())
@@ -227,6 +255,29 @@ describe('AuthController', () => {
 
       expect(response.body.message).toBe(
         `User with email ${fakeUser.email} already exists`,
+      );
+    });
+
+    it('should return NotFoundException if condominium does not exist', async () => {
+      const fakeUser = UserFactory.create();
+
+      const userSignUpRequest: UserSignUpRequest = {
+        condominiumId: 1,
+        email: fakeUser.email,
+        password: '123',
+        firstName: 'Nicolás',
+        lastName: 'Flórez',
+        phone: '3058668807',
+        role: UserRole.Administrator,
+      };
+
+      const response = await request(app.getHttpServer())
+        .post('/auth/sign-up')
+        .send(userSignUpRequest)
+        .expect(HttpStatus.NOT_FOUND);
+
+      expect(response.body.message).toBe(
+        `Condominium with id ${userSignUpRequest.condominiumId} not found`,
       );
     });
   });
@@ -266,12 +317,13 @@ describe('AuthController', () => {
         .mockRejectedValue(new Error('Error'));
 
       const userSignUpRequest: UserSignUpRequest = {
+        condominiumId: 1,
         email: 'nflorez@gmail.com',
         password: '123',
         firstName: 'Nicolás',
         lastName: 'Flórez',
         phone: '3058668807',
-        role: UserRole.Admin,
+        role: UserRole.Administrator,
       };
 
       await request(app.getHttpServer())
@@ -297,8 +349,18 @@ describe('AuthController', () => {
     });
 
     it('Should return UNAUTHORIZED when password is invalid', async () => {
-      const fakeUser = UserFactory.create();
+      const fakeCondominium = CondominiumFactory.create();
+      await prismaService.condominium.create({
+        data: {
+          id: fakeCondominium.getId(),
+          name: fakeCondominium.getName(),
+          address: fakeCondominium.getAddress(),
+        },
+      });
 
+      const fakeUser = UserFactory.create({
+        condominiumId: fakeCondominium.getId(),
+      });
       await userRepository.create(fakeUser);
 
       const userLogInRequest: UserLogInRequest = {
@@ -315,8 +377,19 @@ describe('AuthController', () => {
     });
 
     it('should call UserLogInUseCase with correct parameters', async () => {
-      const fakeUser = UserFactory.create();
-      userRepository.create(fakeUser);
+      const fakeCondominium = CondominiumFactory.create();
+      await prismaService.condominium.create({
+        data: {
+          id: fakeCondominium.getId(),
+          name: fakeCondominium.getName(),
+          address: fakeCondominium.getAddress(),
+        },
+      });
+
+      const fakeUser = UserFactory.create({
+        condominiumId: fakeCondominium.getId(),
+      });
+      await userRepository.create(fakeUser);
 
       const useCaseSpy = jest.spyOn(userLogInUseCase, 'execute');
 
@@ -355,8 +428,10 @@ describe('AuthController', () => {
 
     it('should return UNAUTHORIZED if token is expired', async () => {
       const user = UserFactory.create();
-      const token = await jwtService.generateToken({
+      const token = applicationJwtService.generateToken({
         id: user.id,
+        condominium_id: user.condominiumId,
+        role: user.role,
       });
 
       jest
@@ -373,9 +448,19 @@ describe('AuthController', () => {
 
     it('should validate token and return user data', async () => {
       const user = UserFactory.create();
+      const condominium = CondominiumFactory.create();
+
+      await prismaService.condominium.create({
+        data: {
+          id: condominium.getId(),
+          name: condominium.getName(),
+          address: condominium.getAddress(),
+        },
+      });
 
       await prismaService.user.create({
         data: {
+          condominium_id: condominium.getId(),
           id: user.id,
           email: user.email,
           password: user.password,
@@ -386,8 +471,10 @@ describe('AuthController', () => {
         },
       });
 
-      const token = await jwtService.generateToken({
+      const token = applicationJwtService.generateToken({
         id: user.id,
+        condominium_id: user.condominiumId,
+        role: user.role,
       });
 
       const response = await request(app.getHttpServer())
@@ -401,8 +488,10 @@ describe('AuthController', () => {
     });
 
     it('should return UNAUTHORIZED if user is not found', async () => {
-      const token = await jwtService.generateToken({
+      const token = await applicationJwtService.generateToken({
         id: 1,
+        condominium_id: 1,
+        role: UserRole.Administrator,
       });
 
       const response = await request(app.getHttpServer())
@@ -411,6 +500,25 @@ describe('AuthController', () => {
         .expect(HttpStatus.UNAUTHORIZED);
 
       expect(response.body.message).toBe('User with id 1 not found');
+    });
+
+    it('should return InternalServerErrorException if something strange happen', async () => {
+      const token = await applicationJwtService.generateToken({
+        id: 1,
+        condominium_id: 1,
+        role: UserRole.Administrator,
+      });
+
+      const useCaseSpy = jest
+        .spyOn(userRepository, 'findById')
+        .mockRejectedValue(new Error('Error'));
+
+      await request(app.getHttpServer())
+        .post('/auth/validate-token')
+        .set('Authorization', `Bearer ${token}`)
+        .expect(HttpStatus.INTERNAL_SERVER_ERROR);
+
+      useCaseSpy.mockRestore();
     });
   });
 });

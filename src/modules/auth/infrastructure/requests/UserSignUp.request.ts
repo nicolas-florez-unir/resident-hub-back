@@ -1,10 +1,21 @@
 import { UserRole } from '@user/domain/enums/UserRole.enum';
-import { IsEmail, IsIn, IsNotEmpty, IsString } from 'class-validator';
+import {
+  IsEmail,
+  IsIn,
+  IsNotEmpty,
+  IsNumber,
+  IsPositive,
+  IsString,
+} from 'class-validator';
 
 export class UserSignUpRequest {
   @IsString()
   @IsEmail()
   email: string;
+
+  @IsNumber()
+  @IsPositive()
+  condominiumId: number;
 
   @IsString()
   @IsNotEmpty()
@@ -23,6 +34,6 @@ export class UserSignUpRequest {
   phone: string;
 
   @IsString()
-  @IsIn(['Admin', 'HouseOwner'])
+  @IsIn([UserRole.Administrator, UserRole.HouseOwner])
   role: UserRole;
 }

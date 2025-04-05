@@ -27,6 +27,7 @@ export class UserLogInUseCase {
 
     return new UserEntity(
       user.id,
+      user.condominiumId,
       user.email,
       user.password,
       user.firstName,
