@@ -8,6 +8,7 @@ export class HealthCheckController {
   getHealthCheck(): Record<any, any> {
     return {
       status: 'ok',
+      code: 200,
     };
   }
 }
