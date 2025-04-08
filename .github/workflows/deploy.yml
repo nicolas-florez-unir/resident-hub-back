@@ -18,15 +18,15 @@ jobs:
 
       - name: Create .env file
         run: |
-          touch .env
-          echo "APP_PORT=${{ secrets.APP_PORT }}" >> .env
-          echo "DATABASE_URL=${{ secrets.DATABASE_URL }}" >> .env
-          echo "ENCRYPT_SALT_ROUNDS=${{ secrets.ENCRYPT_SALT_ROUNDS }}" >> .env
-          echo "JWT_SECRET=${{ secrets.JWT_SECRET }}" >> .env
-          echo "DEFAULT_USER_PASSWORD=${{ secrets.DEFAULT_USER_PASSWORD }}" >> .env
-          echo "PRIVATE_API_SECRET=${{ secrets.PRIVATE_API_SECRET }}" >> .env
-          echo "NODE_ENV=production" >> .env
-          cat .env
+          touch .env.build
+          echo "APP_PORT=${{ secrets.APP_PORT }}" >> .env.build
+          echo "DATABASE_URL=${{ secrets.DATABASE_URL }}" >> .env.build
+          echo "ENCRYPT_SALT_ROUNDS=${{ secrets.ENCRYPT_SALT_ROUNDS }}" >> .env.build
+          echo "JWT_SECRET=${{ secrets.JWT_SECRET }}" >> .env.build
+          echo "DEFAULT_USER_PASSWORD=${{ secrets.DEFAULT_USER_PASSWORD }}" >> .env.build
+          echo "PRIVATE_API_SECRET=${{ secrets.PRIVATE_API_SECRET }}" >> .env.build
+          echo "NODE_ENV=production" >> .env.build
+          cat .env.build
 
       - name: see files
         run: ls -la
