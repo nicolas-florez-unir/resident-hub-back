@@ -10,11 +10,11 @@ COPY package.json package-lock.json ./
 RUN npm ci
 
 # Copiar el resto de la aplicación
+COPY .env /app/.env
 COPY . .
 
 RUN ls -al
 
-COPY .env /app/.env
 
 RUN npx prisma generate
 
