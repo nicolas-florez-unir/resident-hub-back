@@ -28,6 +28,9 @@ jobs:
           echo "NODE_ENV=production" >> .env
           cat .env
 
+      - name: see files
+        run: ls -la
+
       - name: Install Railway CLI
         run: curl -fsSL https://railway.app/install.sh | sh
 
