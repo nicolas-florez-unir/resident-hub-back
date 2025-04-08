@@ -27,7 +27,6 @@ WORKDIR /app
 # Copiar solo lo necesario desde la etapa de construcción
 COPY --from=builder /app/node_modules ./node_modules
 COPY --from=builder /app/dist ./dist
-COPY --from=builder /app/.env ./.env
 COPY --from=builder /app/prisma ./prisma
 COPY package.json ./
 
