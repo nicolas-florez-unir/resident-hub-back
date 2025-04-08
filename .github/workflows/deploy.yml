@@ -1,0 +1,37 @@
+name: Deploy
+
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: Environment to deploy
+        type: environment
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment: ${{ github.event.inputs.environment }}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Create .env file
+        run: |
+          touch .env
+          echo "APP_PORT=${{ secrets.APP_PORT }}" >> .env
+          echo "DATABASE_URL=${{ secrets.DATABASE_URL }}" >> .env
+          echo "ENCRYPT_SALT_ROUNDS=${{ secrets.ENCRYPT_SALT_ROUNDS }}" >> .env
+          echo "JWT_SECRET=${{ secrets.JWT_SECRET }}" >> .env
+          echo "DEFAULT_USER_PASSWORD=${{ secrets.DEFAULT_USER_PASSWORD }}" >> .env
+          echo "PRIVATE_API_SECRET=${{ secrets.PRIVATE_API_SECRET }}" >> .env
+          echo "NODE_ENV=production" >> .env
+          cat .env
+
+      - name: Install Railway CLI
+        run: curl -fsSL https://railway.app/install.sh | sh
+
+      - name: Deploy to Railway
+        env:
+          RAILWAY_PROJECT_ID: ${{ secrets.RAILWAY_PROJECT_ID }}
+        run: RAILWAY_TOKEN=${{ secrets.RAILWAY_DEPLOY_TOKEN }} railway up --service=resident-hub-back
