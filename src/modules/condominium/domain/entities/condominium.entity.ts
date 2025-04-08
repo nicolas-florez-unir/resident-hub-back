@@ -6,6 +6,7 @@ export class CondominiumEntity {
     private name: string,
     private address: string,
     private administratorId: number,
+    private logo: string,
     private createdAt: Date,
     private updatedAt: Date,
     private administrator?: UserEntity,
@@ -65,5 +66,13 @@ export class CondominiumEntity {
 
   public setAdministrator(administrator: UserEntity | undefined): void {
     this.administrator = administrator;
+  }
+
+  public getLogo(): string {
+    return this.logo;
+  }
+
+  public setLogo(logo: string): void {
+    this.logo = logo;
   }
 }

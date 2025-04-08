@@ -25,6 +25,7 @@ export class PrismaCondominiumRepository implements CondominiumRepository {
       createdCondominium.name,
       createdCondominium.address,
       createdCondominium.administrator_id,
+      createdCondominium.logo,
       createdCondominium.created_at,
       createdCondominium.updated_at,
     );
@@ -39,6 +40,7 @@ export class PrismaCondominiumRepository implements CondominiumRepository {
         data: {
           name: condominium.getName(),
           address: condominium.getAddress(),
+          logo: condominium.getLogo(),
           administrator_id: condominium.getAdministratorId(),
         },
       });
@@ -48,6 +50,7 @@ export class PrismaCondominiumRepository implements CondominiumRepository {
         updated.name,
         updated.address,
         updated.administrator_id,
+        updated.logo,
         updated.created_at,
         updated.updated_at,
       );
@@ -78,6 +81,7 @@ export class PrismaCondominiumRepository implements CondominiumRepository {
       condominium.name,
       condominium.address,
       condominium.administrator_id,
+      condominium.logo,
       condominium.created_at,
       condominium.updated_at,
     );

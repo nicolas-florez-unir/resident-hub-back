@@ -13,7 +13,7 @@ async function bootstrap() {
         method: RequestMethod.GET,
       },
       {
-        path: 'private/(.*)',
+        path: 'private/*path',
         method: RequestMethod.ALL,
       },
     ],

@@ -7,6 +7,10 @@ import { CreateCondominiumUseCase } from './application/use-cases/create-condomi
 import { UserModule } from '@user/user.module';
 import { PrismaService } from '@common/database/prisma/prisma.service';
 import { GetCondominiumByIdUseCase } from './application/use-cases/get-condominium-by-id.use-case';
+import { LocalStorageStrategy } from '../files/application/strategies/local-storage.strategy';
+import { StorageStrategy } from '../files/domain/strategies/storage.strategy';
+import { UpdateCondominiumLogoUseCase } from './application/use-cases/update-condominium-logo.use-case';
+import { DeleteCondominiumLogoUseCase } from './application/use-cases/delete-condominium-logo.use-case';
 
 @Module({
   imports: [UserModule],
@@ -16,9 +20,15 @@ import { GetCondominiumByIdUseCase } from './application/use-cases/get-condomini
     AssignAdministratorUseCase,
     CreateCondominiumUseCase,
     GetCondominiumByIdUseCase,
+    UpdateCondominiumLogoUseCase,
+    DeleteCondominiumLogoUseCase,
     {
       provide: CondominiumRepository,
       useClass: PrismaCondominiumRepository,
+    },
+    {
+      provide: StorageStrategy,
+      useValue: new LocalStorageStrategy(),
     },
   ],
   exports: [

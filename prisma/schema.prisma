@@ -39,9 +39,10 @@ model User {
 
 model Condominium {
   id               Int      @id @default(autoincrement())
+  administrator_id Int?
   name             String
   address          String
-  administrator_id Int?
+  logo             String?
   created_at       DateTime @default(now())
   updated_at       DateTime @updatedAt
 

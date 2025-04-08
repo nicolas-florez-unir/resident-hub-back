@@ -18,9 +18,10 @@ CREATE TABLE `users` (
 -- CreateTable
 CREATE TABLE `condominiums` (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
+    `administrator_id` INTEGER NULL,
     `name` VARCHAR(191) NOT NULL,
     `address` VARCHAR(191) NOT NULL,
-    `administrator_id` INTEGER NULL,
+    `logo` VARCHAR(191) NULL,
     `created_at` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updated_at` DATETIME(3) NOT NULL,
 

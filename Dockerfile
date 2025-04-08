@@ -12,6 +12,8 @@ RUN npm ci
 # Copiar el resto de la aplicación
 COPY . .
 
+RUN ls -al
+
 COPY .env /app/.env
 
 RUN npx prisma generate

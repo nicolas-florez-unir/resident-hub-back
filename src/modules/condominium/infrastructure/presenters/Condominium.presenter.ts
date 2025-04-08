@@ -5,6 +5,7 @@ export class CondominiumPresenter {
     return {
       id: condominiumEntity.getId(),
       name: condominiumEntity.getName(),
+      logo: condominiumEntity.getLogo(),
       address: condominiumEntity.getAddress(),
       administratorId: condominiumEntity.getAdministrator(),
       createdAt: condominiumEntity.getCreatedAt().toString(),

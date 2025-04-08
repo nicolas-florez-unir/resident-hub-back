@@ -10,8 +10,9 @@ import { CreateNewClientRequest } from '../requests/CreateNewClient.request';
 import { CreateNewClientUseCase } from '../../application/use-cases/create-new-client.use-case';
 import { PrivateApiGuard } from '../guards/PrivateApi.guard';
 import { UserAlreadyExistException } from '@user/domain/exceptions/user-already-exist.exception';
+import { ThrottlerGuard } from '@nestjs/throttler';
 
-@UseGuards(PrivateApiGuard)
+@UseGuards(ThrottlerGuard, PrivateApiGuard)
 @Controller('private')
 export class PrivateController {
   constructor(
