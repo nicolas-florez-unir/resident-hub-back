@@ -1,5 +1,5 @@
 import { envs } from '@common/env/env.validation';
-import { Injectable, Logger } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { UserRole } from '@user/domain/enums/UserRole.enum';
 

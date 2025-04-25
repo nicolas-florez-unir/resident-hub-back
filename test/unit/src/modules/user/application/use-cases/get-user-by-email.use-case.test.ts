@@ -22,9 +22,7 @@ describe('GetUserByEmailUseCase', () => {
       ],
     }).compile();
 
-    getUserByEmailUseCase = module.get<GetUserByEmailUseCase>(
-      GetUserByEmailUseCase,
-    );
+    getUserByEmailUseCase = module.get<GetUserByEmailUseCase>(GetUserByEmailUseCase);
     userRepository = module.get(UserRepository);
   });
 
@@ -43,11 +41,9 @@ describe('GetUserByEmailUseCase', () => {
   it('should throw UserNotFoundException when user is not found', async () => {
     userRepository.findByEmail.mockResolvedValue(null);
 
-    await expect(
-      getUserByEmailUseCase.execute('notfound@example.com'),
-    ).rejects.toThrow(UserNotFoundException);
-    expect(userRepository.findByEmail).toHaveBeenCalledWith(
-      'notfound@example.com',
+    await expect(getUserByEmailUseCase.execute('notfound@example.com')).rejects.toThrow(
+      UserNotFoundException,
     );
+    expect(userRepository.findByEmail).toHaveBeenCalledWith('notfound@example.com');
   });
 });

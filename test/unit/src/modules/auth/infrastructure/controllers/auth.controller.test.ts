@@ -6,22 +6,12 @@ import { UserEntity } from '@user/domain/entities/User.entity';
 import { UserLogInUseCase } from '@auth/application/use-cases/user-log-in.use-case';
 import { UserPresenter } from '@auth/infrastructure/presenters/User.presenter';
 import { UserLogInRequest } from '@auth/infrastructure/requests/UserLogIn.request';
-import { InvalidCredentialsException } from '@auth/domain/exceptions/invalid-credentials.exception';
-import {
-  ConflictException,
-  HttpException,
-  HttpStatus,
-  InternalServerErrorException,
-  UnauthorizedException,
-} from '@nestjs/common';
+import { ConflictException, HttpException, HttpStatus } from '@nestjs/common';
 import { ApplicationJwtService } from '@auth/infrastructure/jwt/application-jwt.service';
 import { JwtModule } from '@nestjs/jwt';
-import { UserLoggedPresenter } from '@auth/infrastructure/presenters/user-logged.presenter';
 import { CreateUserDto } from '@user/domain/dtos/CreateUserDto';
 import { GetUserByIdUseCase } from '@user/application/use-cases/get-user-by-id.use-case';
 import { UserFactory } from 'test/utils/factories/user.factory';
-import { TokenError } from '@auth/domain/error/token.error';
-import { UserNotFoundException } from '@user/domain/exceptions/user-not-found.exception';
 import { CondominiumFactory } from 'test/utils/factories/condominium.factory';
 import { UserRole } from '@user/domain/enums/UserRole.enum';
 import { UserAlreadyExistException } from '@user/domain/exceptions/user-already-exist.exception';
@@ -32,8 +22,6 @@ describe('AuthController', () => {
   let authController: AuthController;
   let userSignUpUseCase: UserSignUpUseCase;
   let userLogInUseCase: UserLogInUseCase;
-  let getUserByIdUseCase: GetUserByIdUseCase;
-  let applicationJwtService: ApplicationJwtService;
 
   beforeAll(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -249,6 +237,5 @@ describe('AuthController', () => {
 
       expect(executeSpy).toHaveBeenCalledWith(request.email, request.password);
     });
-
   });
 });

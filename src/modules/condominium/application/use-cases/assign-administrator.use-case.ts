@@ -11,12 +11,8 @@ export class AssignAdministratorUseCase {
     private readonly getAdministratorByIdUseCase: GetAdministratorByIdUseCase,
   ) {}
 
-  async execute(
-    condominiumId: number,
-    userId: number,
-  ): Promise<CondominiumEntity> {
-    const condominium =
-      await this.condominiumRepository.findById(condominiumId);
+  async execute(condominiumId: number, userId: number): Promise<CondominiumEntity> {
+    const condominium = await this.condominiumRepository.findById(condominiumId);
 
     if (!condominium) {
       throw new CondominiumNotFoundException(
@@ -24,13 +20,11 @@ export class AssignAdministratorUseCase {
       );
     }
 
-    const administrator =
-      await this.getAdministratorByIdUseCase.execute(userId);
+    const administrator = await this.getAdministratorByIdUseCase.execute(userId);
 
     condominium.setAdministrator(administrator);
 
-    const condominiumUpdated =
-      await this.condominiumRepository.update(condominium);
+    const condominiumUpdated = await this.condominiumRepository.update(condominium);
 
     return condominiumUpdated;
   }

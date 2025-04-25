@@ -43,9 +43,7 @@ describe('UpdateUserUseCase', () => {
   it('should throw an error if userRepository.update fails', async () => {
     mockUserRepository.update.mockRejectedValue(new Error('Update failed'));
 
-    await expect(updateUserUseCase.execute(mockUser)).rejects.toThrow(
-      'Update failed',
-    );
+    await expect(updateUserUseCase.execute(mockUser)).rejects.toThrow('Update failed');
   });
 
   it("should throw an UserNotFoundException if user doesn't exist", async () => {

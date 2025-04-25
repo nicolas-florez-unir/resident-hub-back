@@ -57,9 +57,7 @@ describe('CreateCondominiumUseCase', () => {
       address: '123 Test St',
     };
 
-    mockCondominiumRepository.create.mockRejectedValue(
-      new Error('Database error'),
-    );
+    mockCondominiumRepository.create.mockRejectedValue(new Error('Database error'));
 
     await expect(useCase.execute(dto)).rejects.toThrow('Database error');
     expect(repository.create).toHaveBeenCalledWith(dto);

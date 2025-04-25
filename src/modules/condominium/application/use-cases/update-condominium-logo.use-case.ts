@@ -22,7 +22,8 @@ export class UpdateCondominiumLogoUseCase {
       await this.deleteCondominiumLogoUseCase.execute(condominium);
     } catch (error) {
       this.logger.warn(
-        `Error deleting old logo: ${condominium.getLogo()} for condominium ${condominium.getId()}: ${error.message}`,
+        `Error deleting old logo: ${condominium.getLogo()} for condominium ${condominium.getId()}:
+        ${error.message}`,
       );
     }
 

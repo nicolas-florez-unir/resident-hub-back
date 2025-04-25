@@ -22,9 +22,7 @@ describe('PrismaUserRepository', () => {
 
     prismaService = module.get<PrismaService>(PrismaService);
     userRepository = module.get<PrismaUserRepository>(PrismaUserRepository);
-    loggerErrorSpy = jest
-      .spyOn(Logger.prototype, 'error')
-      .mockImplementation(() => {});
+    loggerErrorSpy = jest.spyOn(Logger.prototype, 'error').mockImplementation(() => {});
   });
 
   beforeEach(async () => {
@@ -108,18 +106,14 @@ describe('PrismaUserRepository', () => {
           ),
         ),
       ).rejects.toThrow(
-        new UserAlreadyExistException(
-          `User with email ${user.email} already exists`,
-        ),
+        new UserAlreadyExistException(`User with email ${user.email} already exists`),
       );
     });
 
     it('should throw an error if Prisma throws an unexpected error', async () => {
       const user = UserFactory.create();
 
-      jest
-        .spyOn(prismaService.user, 'create')
-        .mockRejectedValueOnce(new Error());
+      jest.spyOn(prismaService.user, 'create').mockRejectedValueOnce(new Error());
 
       await expect(
         userRepository.create(
@@ -263,9 +257,7 @@ describe('PrismaUserRepository', () => {
     it('should throw an error if Prisma throws an unexpected error', async () => {
       const user = UserFactory.create();
 
-      jest
-        .spyOn(prismaService.user, 'update')
-        .mockRejectedValueOnce(new Error());
+      jest.spyOn(prismaService.user, 'update').mockRejectedValueOnce(new Error());
 
       await expect(userRepository.update(user)).rejects.toThrow();
 

@@ -77,9 +77,7 @@ describe('AuthController', () => {
     userRepository = module.get<UserRepository>(UserRepository);
     prismaService = module.get<PrismaService>(PrismaService);
     userLogInUseCase = module.get<UserLogInUseCase>(UserLogInUseCase);
-    applicationJwtService = module.get<ApplicationJwtService>(
-      ApplicationJwtService,
-    );
+    applicationJwtService = module.get<ApplicationJwtService>(ApplicationJwtService);
   });
 
   beforeEach(async () => {
@@ -92,50 +90,49 @@ describe('AuthController', () => {
 
   describe('POST /auth/sign-up', () => {
     describe('Should validate request', () => {
-      const dataSet: Array<{ case: string; body: Partial<UserSignUpRequest> }> =
-        [
-          { case: 'empty body', body: {} },
-          {
-            case: 'invalid email',
-            body: {
-              email: 'invalid_email',
-              password: '123',
-              firstName: 'Nicolás',
-              lastName: 'Flórez',
-              phone: '3058668807',
-              role: UserRole.Administrator,
-            },
+      const dataSet: Array<{ case: string; body: Partial<UserSignUpRequest> }> = [
+        { case: 'empty body', body: {} },
+        {
+          case: 'invalid email',
+          body: {
+            email: 'invalid_email',
+            password: '123',
+            firstName: 'Nicolás',
+            lastName: 'Flórez',
+            phone: '3058668807',
+            role: UserRole.Administrator,
           },
-          {
-            case: 'missing firstName',
-            body: {
-              email: 'nflorez@gmail.com',
-              password: '123',
-              lastName: 'Flórez',
-              phone: '3058668807',
-              role: UserRole.Administrator,
-            },
+        },
+        {
+          case: 'missing firstName',
+          body: {
+            email: 'nflorez@gmail.com',
+            password: '123',
+            lastName: 'Flórez',
+            phone: '3058668807',
+            role: UserRole.Administrator,
           },
-          {
-            case: 'missing lastName',
-            body: {
-              email: 'nflorez@gmail.com',
-              password: '123',
-              firstName: 'Nicolás',
-              phone: '3058668807',
-              role: UserRole.Administrator,
-            },
+        },
+        {
+          case: 'missing lastName',
+          body: {
+            email: 'nflorez@gmail.com',
+            password: '123',
+            firstName: 'Nicolás',
+            phone: '3058668807',
+            role: UserRole.Administrator,
           },
-          {
-            case: 'missing password',
-            body: {
-              email: 'nflorez@gmail.com',
-              firstName: 'Nicolás',
-              phone: '3058668807',
-              role: UserRole.Administrator,
-            },
+        },
+        {
+          case: 'missing password',
+          body: {
+            email: 'nflorez@gmail.com',
+            firstName: 'Nicolás',
+            phone: '3058668807',
+            role: UserRole.Administrator,
           },
-        ];
+        },
+      ];
 
       it.each(dataSet)('Validate $case', async (data) => {
         await request(app.getHttpServer())
@@ -206,9 +203,7 @@ describe('AuthController', () => {
         .send(userSignUpRequest)
         .expect(201);
 
-      const existingUser = await userRepository.findByEmail(
-        userSignUpRequest.email,
-      );
+      const existingUser = await userRepository.findByEmail(userSignUpRequest.email);
 
       expect(useCaseSpy).toHaveBeenCalledWith(dto);
 
@@ -284,24 +279,23 @@ describe('AuthController', () => {
 
   describe('POST /auth/login', () => {
     describe('Should validate request', () => {
-      const dataSet: Array<{ case: string; body: Partial<UserLogInRequest> }> =
-        [
-          { case: 'empty body', body: {} },
-          {
-            case: 'invalid email',
-            body: {
-              email: 'not_valid-email',
-              password: 'password123',
-            },
+      const dataSet: Array<{ case: string; body: Partial<UserLogInRequest> }> = [
+        { case: 'empty body', body: {} },
+        {
+          case: 'invalid email',
+          body: {
+            email: 'not_valid-email',
+            password: 'password123',
           },
-          {
-            case: 'missing password',
-            body: {
-              email: 'johndoe@gmail.com',
-              password: '',
-            },
+        },
+        {
+          case: 'missing password',
+          body: {
+            email: 'johndoe@gmail.com',
+            password: '',
           },
-        ];
+        },
+      ];
 
       it.each(dataSet)('Validate $case', async (data) => {
         await request(app.getHttpServer())
@@ -434,9 +428,7 @@ describe('AuthController', () => {
         role: user.role,
       });
 
-      jest
-        .useFakeTimers()
-        .setSystemTime(new Date(Date.now() + 2 * 60 * 60 * 1000));
+      jest.useFakeTimers().setSystemTime(new Date(Date.now() + 2 * 60 * 60 * 1000));
 
       await request(app.getHttpServer())
         .post('/auth/validate-token')
@@ -483,8 +475,10 @@ describe('AuthController', () => {
         .expect(200); // Espera un código de estado 200
 
       // Aquí puedes hacer aserciones sobre la respuesta
-      expect(response.body).toHaveProperty('user'); // Asegúrate de que la respuesta tenga el campo 'user'
-      expect(response.body).toHaveProperty('token'); // Asegúrate de que la respuesta también tenga el token
+      // Asegúrate de que la respuesta tenga el campo 'user'
+      expect(response.body).toHaveProperty('user');
+      // Asegúrate de que la respuesta también tenga el token
+      expect(response.body).toHaveProperty('token');
     });
 
     it('should return UNAUTHORIZED if user is not found', async () => {

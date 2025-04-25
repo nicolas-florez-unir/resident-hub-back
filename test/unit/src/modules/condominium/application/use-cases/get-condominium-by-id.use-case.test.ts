@@ -39,9 +39,7 @@ describe('GetCondominiumByIdUseCase', () => {
     const mockCondominium = CondominiumFactory.create();
     mockCondominiumRepository.findById.mockResolvedValue(mockCondominium);
 
-    const result = await getCondominiumByIdUseCase.execute(
-      mockCondominium.getId(),
-    );
+    const result = await getCondominiumByIdUseCase.execute(mockCondominium.getId());
 
     expect(result).toEqual(mockCondominium);
   });

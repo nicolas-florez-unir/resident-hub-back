@@ -1,10 +1,7 @@
 import { UserEntity } from '@user/domain/entities/User.entity';
 
 export class UserLoggedPresenter {
-  public static present(
-    user: UserEntity,
-    accessToken: string,
-  ) {
+  public static present(user: UserEntity, accessToken: string) {
     return {
       user: {
         id: user.id,

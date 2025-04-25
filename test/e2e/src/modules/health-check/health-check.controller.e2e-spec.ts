@@ -16,11 +16,8 @@ describe('HealthCheckController (e2e)', () => {
   });
 
   it('/ (GET)', () => {
-    return request(app.getHttpServer())
-      .get('/health-check')
-      .expect(200)
-      .expect({
-        status: 'ok',
-      });
+    return request(app.getHttpServer()).get('/health-check').expect(200).expect({
+      status: 'ok',
+    });
   });
 });

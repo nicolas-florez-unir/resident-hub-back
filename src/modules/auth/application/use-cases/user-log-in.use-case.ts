@@ -22,8 +22,7 @@ export class UserLogInUseCase {
 
     const isValidPassword = bcrypt.compareSync(password, user.password);
 
-    if (!isValidPassword)
-      throw new InvalidCredentialsException('Invalid password');
+    if (!isValidPassword) throw new InvalidCredentialsException('Invalid password');
 
     return new UserEntity(
       user.id,

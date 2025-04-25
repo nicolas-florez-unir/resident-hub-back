@@ -48,14 +48,9 @@ describe('AssignAdministratorUseCase', () => {
     getUserByIdUseCase.execute.mockResolvedValue(user);
     condominiumRepository.update.mockResolvedValue(condominium);
 
-    const result = await assignAdministratorUseCase.execute(
-      condominium.getId(),
-      user.id,
-    );
+    const result = await assignAdministratorUseCase.execute(condominium.getId(), user.id);
 
-    expect(condominiumRepository.findById).toHaveBeenCalledWith(
-      condominium.getId(),
-    );
+    expect(condominiumRepository.findById).toHaveBeenCalledWith(condominium.getId());
     expect(getUserByIdUseCase.execute).toHaveBeenCalledWith(user.id);
     expect(condominiumRepository.update).toHaveBeenCalledWith(condominium);
     expect(result).toEqual(condominium);
@@ -84,9 +79,7 @@ describe('AssignAdministratorUseCase', () => {
       assignAdministratorUseCase.execute(condominium.getId(), 1),
     ).rejects.toThrow(UserNotFoundException);
 
-    expect(condominiumRepository.findById).toHaveBeenCalledWith(
-      condominium.getId(),
-    );
+    expect(condominiumRepository.findById).toHaveBeenCalledWith(condominium.getId());
     expect(getUserByIdUseCase.execute).toHaveBeenCalledWith(1);
     expect(condominiumRepository.update).not.toHaveBeenCalled();
   });
@@ -102,9 +95,7 @@ describe('AssignAdministratorUseCase', () => {
       assignAdministratorUseCase.execute(condominium.getId(), 1),
     ).rejects.toThrow(exception);
 
-    expect(condominiumRepository.findById).toHaveBeenCalledWith(
-      condominium.getId(),
-    );
+    expect(condominiumRepository.findById).toHaveBeenCalledWith(condominium.getId());
     expect(getUserByIdUseCase.execute).toHaveBeenCalledWith(1);
     expect(condominiumRepository.update).not.toHaveBeenCalled();
   });

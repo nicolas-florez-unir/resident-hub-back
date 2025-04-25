@@ -43,9 +43,7 @@ export class CondominiumController {
 
   @UseGuards(AuthGuard)
   @Get('/info')
-  async getCondominiumInfo(
-    @UserFromRequest() userFromRequest: UserFromRequestInterface,
-  ) {
+  async getCondominiumInfo(@UserFromRequest() userFromRequest: UserFromRequestInterface) {
     try {
       const condominium = await this.getCondominiumByIdUseCase.execute(
         userFromRequest.condominium_id,
@@ -80,10 +78,7 @@ export class CondominiumController {
     @Param('userId', ParseIntPipe) userId: number,
   ) {
     try {
-      const condominium = await this.assignAdministratorUseCase.execute(
-        id,
-        userId,
-      );
+      const condominium = await this.assignAdministratorUseCase.execute(id, userId);
 
       return CondominiumPresenter.toObject(condominium);
     } catch (error) {

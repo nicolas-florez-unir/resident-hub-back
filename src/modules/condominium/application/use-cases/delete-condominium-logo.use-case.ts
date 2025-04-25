@@ -4,9 +4,7 @@ import { CondominiumEntity } from '@condominium/domain/entities/condominium.enti
 
 @Injectable()
 export class DeleteCondominiumLogoUseCase {
-  constructor(
-    private readonly storageStrategy: StorageStrategy,
-  ) {}
+  constructor(private readonly storageStrategy: StorageStrategy) {}
 
   async execute(condominium: CondominiumEntity): Promise<void> {
     await this.storageStrategy.deleteFile(condominium.getLogo());

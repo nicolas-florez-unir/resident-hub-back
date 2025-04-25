@@ -17,11 +17,11 @@ export class LocalStorageStrategy extends StorageStrategy {
     'uploads',
   );
 
-  constructor(){
+  constructor() {
     super();
     this.ensureUploadDirectory()
       .then(() => this.logger.log('Upload directory is ready'))
-      .catch(err => this.logger.fatal('Error creating upload directory:', err));
+      .catch((err) => this.logger.fatal('Error creating upload directory:', err));
   }
 
   // Método para asegurarse de que la carpeta de uploads exista
@@ -29,7 +29,7 @@ export class LocalStorageStrategy extends StorageStrategy {
     try {
       // Verifica si la carpeta existe
       await fs.access(this.uploadPath);
-    } catch (err) {
+    } catch {
       this.logger.warn('Carpeta de uploads no existe, creando...');
       // Si la carpeta no existe, la crea
       await fs.mkdir(this.uploadPath, { recursive: true });
@@ -53,7 +53,9 @@ export class LocalStorageStrategy extends StorageStrategy {
     } catch (error) {
       if (error.code === 'ENOENT') {
         // Si el archivo no existe, no es un error crítico
-        this.logger.error(`El archivo ${fileName} no existe en el sistema de archivos. Omitiendo eliminación.`);
+        this.logger.error(
+          `El archivo ${fileName} no existe en el sistema de archivos. Omitiendo eliminación.`,
+        );
         return;
       }
 

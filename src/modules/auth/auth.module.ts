@@ -9,7 +9,7 @@ import { ApplicationJwtService } from './infrastructure/jwt/application-jwt.serv
 import { JwtModule } from '@nestjs/jwt';
 
 @Module({
-  imports: [JwtModule.register({global: true}), UserModule, CondominiumModule],
+  imports: [JwtModule.register({ global: true }), UserModule, CondominiumModule],
   controllers: [AuthController],
   providers: [ApplicationJwtService, UserSignUpUseCase, UserLogInUseCase],
 })

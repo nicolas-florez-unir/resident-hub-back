@@ -1,7 +1,6 @@
 import { CondominiumEntity } from '@condominium/domain/entities/condominium.entity';
 import { UserEntity } from '@user/domain/entities/User.entity';
 import { UserRole } from '@user/domain/enums/UserRole.enum';
-import { UserFactory } from 'test/utils/factories/user.factory';
 
 describe('CondominiumEntity', () => {
   let condominium: CondominiumEntity;
@@ -72,5 +71,5 @@ describe('CondominiumEntity', () => {
     const logo = 'logo.png';
     condominium.setLogo(logo);
     expect(condominium.getLogo()).toBe(logo);
-  })
+  });
 });

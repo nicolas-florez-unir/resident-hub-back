@@ -58,7 +58,7 @@ describe('UpdateCondominiumLogoUseCase', () => {
       originalname: 'sample.name',
       mimetype: 'sample.type',
       path: 'sample.url',
-      buffer: Buffer.from('whatever'), // this is required since `formData` needs access to the buffer
+      buffer: Buffer.from('whatever'),
     } as Express.Multer.File;
 
     const existingCondominium = CondominiumFactory.create();
@@ -83,7 +83,7 @@ describe('UpdateCondominiumLogoUseCase', () => {
       originalname: 'sample.name',
       mimetype: 'sample.type',
       path: 'sample.url',
-      buffer: Buffer.from('whatever'), // this is required since `formData` needs access to the buffer
+      buffer: Buffer.from('whatever'),
     } as Express.Multer.File;
 
     const existingCondominium = CondominiumFactory.create();
@@ -103,7 +103,8 @@ describe('UpdateCondominiumLogoUseCase', () => {
     await updateCondominiumLogoUseCase.execute(file, existingCondominium);
 
     expect(loggerSpyWarn).toHaveBeenCalledWith(
-      `Error deleting old logo: old-logo.png for condominium ${existingCondominium.getId()}: ${deleteUseCaseSpyError.message}`,
+      `Error deleting old logo: old-logo.png for condominium ${existingCondominium.getId()}:
+      ${deleteUseCaseSpyError.message}`,
     );
     expect(deleteUseCaseSpy).toHaveBeenCalledWith(existingCondominium);
     expect(storageStrategy.saveFile).toHaveBeenCalledWith(file);

@@ -20,16 +20,12 @@ describe('HealthCheckController', () => {
   });
 
   it('should be defined', () => {
-    const healthCheckController = app.get<HealthCheckController>(
-      HealthCheckController,
-    );
+    const healthCheckController = app.get<HealthCheckController>(HealthCheckController);
     expect(healthCheckController).toBeDefined();
   });
 
   it('should return health status', async () => {
-    const response = await request(app.getHttpServer())
-      .get('/health-check')
-      .expect(200);
+    const response = await request(app.getHttpServer()).get('/health-check').expect(200);
 
     expect(response.body).toEqual({ status: 'ok' });
   });

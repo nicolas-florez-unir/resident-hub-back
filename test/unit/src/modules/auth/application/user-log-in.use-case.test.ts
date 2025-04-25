@@ -27,9 +27,7 @@ describe('UserLogInUseCase', () => {
       ],
     }).compile();
 
-    getUserByEmailUseCase = module.get<GetUserByEmailUseCase>(
-      GetUserByEmailUseCase,
-    );
+    getUserByEmailUseCase = module.get<GetUserByEmailUseCase>(GetUserByEmailUseCase);
     userLogInUseCase = module.get<UserLogInUseCase>(UserLogInUseCase);
     userRepository = module.get<UserRepository>(UserRepository);
   });

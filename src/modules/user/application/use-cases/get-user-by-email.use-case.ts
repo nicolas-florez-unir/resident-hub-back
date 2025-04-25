@@ -11,8 +11,7 @@ export class GetUserByEmailUseCase {
   public async execute(email: string): Promise<UserEntity> {
     const user = await this.userRepository.findByEmail(email);
 
-    if (!user)
-      throw new UserNotFoundException(`User with email ${email} not found`);
+    if (!user) throw new UserNotFoundException(`User with email ${email} not found`);
 
     return new UserEntity(
       user.id,

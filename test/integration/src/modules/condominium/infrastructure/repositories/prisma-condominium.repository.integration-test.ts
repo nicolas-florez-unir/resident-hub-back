@@ -21,9 +21,7 @@ describe('PrismaCondominiumRepository', () => {
     condominiumRepository = module.get<PrismaCondominiumRepository>(
       PrismaCondominiumRepository,
     );
-    loggerErrorSpy = jest
-      .spyOn(Logger.prototype, 'error')
-      .mockImplementation(() => {});
+    loggerErrorSpy = jest.spyOn(Logger.prototype, 'error').mockImplementation(() => {});
   });
 
   beforeEach(async () => {
@@ -63,9 +61,7 @@ describe('PrismaCondominiumRepository', () => {
         },
       });
 
-      const result = await condominiumRepository.findById(
-        condominiumCreated.id,
-      );
+      const result = await condominiumRepository.findById(condominiumCreated.id);
 
       expect(result).toBeInstanceOf(CondominiumEntity);
       expect(result.getId()).toBe(condominium.getId());
@@ -120,9 +116,7 @@ describe('PrismaCondominiumRepository', () => {
     it('should throw an error if Prisma throws an unexpected error', async () => {
       const condominium = CondominiumFactory.create();
 
-      jest
-        .spyOn(prismaService.condominium, 'update')
-        .mockRejectedValueOnce(new Error());
+      jest.spyOn(prismaService.condominium, 'update').mockRejectedValueOnce(new Error());
 
       await expect(condominiumRepository.update(condominium)).rejects.toThrow();
 

@@ -37,9 +37,8 @@ describe('UserSignUpUseCase', () => {
 
     useCase = module.get<UserSignUpUseCase>(UserSignUpUseCase);
     userRepository = module.get<jest.Mocked<UserRepository>>(UserRepository);
-    condominiumRepository = module.get<jest.Mocked<CondominiumRepository>>(
-      CondominiumRepository,
-    );
+    condominiumRepository =
+      module.get<jest.Mocked<CondominiumRepository>>(CondominiumRepository);
   });
 
   it('should return true', async () => {

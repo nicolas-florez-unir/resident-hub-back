@@ -1,11 +1,4 @@
-import {
-  Body,
-  Controller,
-  Get,
-  HttpException,
-  Put,
-  UseGuards,
-} from '@nestjs/common';
+import { Body, Controller, Get, HttpException, Put, UseGuards } from '@nestjs/common';
 
 import { AuthGuard } from '@common/guards/auth.guard';
 import { UserFromRequest } from '@common/decorators/user-from-request.decorator';
@@ -25,9 +18,7 @@ export class UserController {
   ) {}
 
   @Get('info')
-  async getUserInfo(
-    @UserFromRequest() userFromRequest: UserFromRequestInterface,
-  ) {
+  async getUserInfo(@UserFromRequest() userFromRequest: UserFromRequestInterface) {
     try {
       const user = await this.getUserByIdUseCase.execute(userFromRequest.id);
       return UserPresenter.toObject(user);
@@ -46,12 +37,7 @@ export class UserController {
     try {
       const user = await this.getUserByIdUseCase.execute(userFromRequest.id);
 
-      user.update(
-        request.email,
-        request.firstName,
-        request.lastName,
-        request.phone,
-      );
+      user.update(request.email, request.firstName, request.lastName, request.phone);
 
       const userUpdated = await this.updateUserUseCase.execute(user);
       return UserPresenter.toObject(userUpdated);

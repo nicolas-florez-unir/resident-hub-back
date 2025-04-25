@@ -18,12 +18,7 @@ export class UserEntity {
     return `${this.firstName} ${this.lastName}`;
   }
 
-  public update(
-    email: string,
-    firstName: string,
-    lastName: string,
-    phone: string,
-  ): void {
+  public update(email: string, firstName: string, lastName: string, phone: string): void {
     this.email = email;
     this.firstName = firstName;
     this.lastName = lastName;

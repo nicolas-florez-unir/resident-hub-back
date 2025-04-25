@@ -2,9 +2,7 @@ import { CondominiumEntity } from '@condominium/domain/entities/condominium.enti
 import { faker } from '@faker-js/faker';
 
 export class CondominiumFactory {
-  public static create(
-    overrides?: Partial<CondominiumEntity>,
-  ): CondominiumEntity {
+  public static create(overrides?: Partial<CondominiumEntity>): CondominiumEntity {
     const now = new Date();
     return new CondominiumEntity(
       overrides?.getId() ?? 1,

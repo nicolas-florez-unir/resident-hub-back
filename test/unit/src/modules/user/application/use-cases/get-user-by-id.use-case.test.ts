@@ -53,8 +53,6 @@ describe('GetUserByIdUseCase', () => {
     const id = 1;
     userRepository.findById.mockRejectedValue(new Error('Database error'));
 
-    await expect(getUserByIdUseCase.execute(id)).rejects.toThrow(
-      'Database error',
-    );
+    await expect(getUserByIdUseCase.execute(id)).rejects.toThrow('Database error');
   });
 });

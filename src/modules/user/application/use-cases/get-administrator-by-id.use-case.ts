@@ -11,9 +11,7 @@ export class GetAdministratorByIdUseCase {
     const user = await this.userRepository.findAdministratorById(id);
 
     if (!user) {
-      throw new UserNotFoundException(
-        `User Administrator with id ${id} not found`,
-      );
+      throw new UserNotFoundException(`User Administrator with id ${id} not found`);
     }
 
     return user;

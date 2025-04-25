@@ -7,8 +7,7 @@ export class GetCondominiumByIdUseCase {
   constructor(private readonly condominiumRepository: CondominiumRepository) {}
 
   async execute(condominiumId: number) {
-    const condominium =
-      await this.condominiumRepository.findById(condominiumId);
+    const condominium = await this.condominiumRepository.findById(condominiumId);
 
     if (!condominium)
       throw new CondominiumNotFoundException(

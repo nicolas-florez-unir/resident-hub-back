@@ -91,7 +91,7 @@ export class AuthController {
 
     try {
       this.applicationJwtService.validateAccessToken(token);
-    } catch (error) {
+    } catch {
       throw new UnauthorizedException(TokenError.INVALID);
     }
 
@@ -117,7 +117,7 @@ export class AuthController {
 
     try {
       this.applicationJwtService.validateRefreshToken(refreshToken);
-    } catch (error) {
+    } catch {
       throw new UnauthorizedException('Refresh token expired');
     }
 

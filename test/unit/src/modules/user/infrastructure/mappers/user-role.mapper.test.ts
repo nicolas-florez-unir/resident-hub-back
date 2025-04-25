@@ -33,9 +33,9 @@ describe('UserRoleMapper', () => {
     });
 
     it('should throw an error for unknown Domain role', () => {
-      expect(() =>
-        UserRoleMapper.toPrisma('UnknownRole' as UserRoleDomain),
-      ).toThrowError('Unknown Prisma role: UnknownRole');
+      expect(() => UserRoleMapper.toPrisma('UnknownRole' as UserRoleDomain)).toThrowError(
+        'Unknown Prisma role: UnknownRole',
+      );
     });
   });
 });

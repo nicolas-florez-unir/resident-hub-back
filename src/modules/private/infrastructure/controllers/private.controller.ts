@@ -15,9 +15,7 @@ import { ThrottlerGuard } from '@nestjs/throttler';
 @UseGuards(ThrottlerGuard, PrivateApiGuard)
 @Controller('private')
 export class PrivateController {
-  constructor(
-    private readonly CreateNewClientUseCase: CreateNewClientUseCase,
-  ) {}
+  constructor(private readonly CreateNewClientUseCase: CreateNewClientUseCase) {}
 
   @Post('create-new-client')
   async createNewClient(@Body() request: CreateNewClientRequest) {
@@ -32,9 +30,7 @@ export class PrivateController {
       });
     } catch (error) {
       if (error instanceof UserAlreadyExistException) {
-        throw new ConflictException(
-          'User already exists, please use another email',
-        );
+        throw new ConflictException('User already exists, please use another email');
       }
       throw new InternalServerErrorException(error);
     }
