@@ -15,7 +15,7 @@ module.exports = {
     node: true,
     jest: true,
   },
-  ignorePatterns: ['.eslintrc.js'],
+  ignorePatterns: ['.eslintrc.js', '.*.test.ts'],
   rules: {
     '@typescript-eslint/interface-name-prefix': 'off',
     '@typescript-eslint/explicit-function-return-type': 'off',
@@ -24,7 +24,7 @@ module.exports = {
     'max-len': [
       'error',
       {
-        code: 100,
+        code: 120,
         ignorePattern: '^import\\s.+\\sfrom\\s.+|^export\\s.+\\sfrom\\s.+',
       },
     ],

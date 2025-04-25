@@ -59,8 +59,6 @@ describe('AuthController', () => {
     authController = module.get<AuthController>(AuthController);
     userSignUpUseCase = module.get<UserSignUpUseCase>(UserSignUpUseCase);
     userLogInUseCase = module.get<UserLogInUseCase>(UserLogInUseCase);
-    getUserByIdUseCase = module.get<GetUserByIdUseCase>(GetUserByIdUseCase);
-    applicationJwtService = module.get<ApplicationJwtService>(ApplicationJwtService);
   });
 
   describe('signUp method', () => {
