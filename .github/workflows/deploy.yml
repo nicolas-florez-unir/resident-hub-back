@@ -22,7 +22,10 @@ jobs:
           echo "APP_PORT=${{ secrets.APP_PORT }}" >> .env.build
           echo "DATABASE_URL=${{ secrets.DATABASE_URL }}" >> .env.build
           echo "ENCRYPT_SALT_ROUNDS=${{ secrets.ENCRYPT_SALT_ROUNDS }}" >> .env.build
-          echo "JWT_SECRET=${{ secrets.JWT_SECRET }}" >> .env.build
+          echo "JWT_ACCESS_SECRET=${{ secrets.JWT_ACCESS_SECRET }}" >> .env.build
+          echo "JWT_ACCESS_EXPIRATION=${{ secrets.JWT_ACCESS_EXPIRATION }}" >> .env.build
+          echo "JWT_REFRESH_SECRET=${{ secrets.JWT_REFRESH_SECRET }}" >> .env.build
+          echo "JWT_REFRESH_EXPIRATION=${{ secrets.JWT_REFRESH_EXPIRATION }}" >> .env.build
           echo "DEFAULT_USER_PASSWORD=${{ secrets.DEFAULT_USER_PASSWORD }}" >> .env.build
           echo "PRIVATE_API_SECRET=${{ secrets.PRIVATE_API_SECRET }}" >> .env.build
           echo "NODE_ENV=production" >> .env.build
