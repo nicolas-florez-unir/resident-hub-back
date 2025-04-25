@@ -1,5 +1,3 @@
-process.loadEnvFile('.env.testing');
-
 module.exports = {
   moduleFileExtensions: ['js', 'json', 'ts'],
   rootDir: './',

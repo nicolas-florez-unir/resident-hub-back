@@ -2,8 +2,10 @@ import { StorageStrategy } from '../../domain/strategies/storage.strategy';
 import { promises as fs } from 'fs';
 import * as crypto from 'crypto';
 import * as path from 'path';
+import { Logger } from '@nestjs/common';
 
 export class LocalStorageStrategy extends StorageStrategy {
+  private readonly logger = new Logger(LocalStorageStrategy.name);
   private readonly uploadPath: string = path.join(
     __dirname,
     '..',
@@ -15,20 +17,26 @@ export class LocalStorageStrategy extends StorageStrategy {
     'uploads',
   );
 
+  constructor(){
+    super();
+    this.ensureUploadDirectory()
+      .then(() => this.logger.log('Upload directory is ready'))
+      .catch(err => this.logger.fatal('Error creating upload directory:', err));
+  }
+
   // Método para asegurarse de que la carpeta de uploads exista
   private async ensureUploadDirectory() {
     try {
       // Verifica si la carpeta existe
       await fs.access(this.uploadPath);
     } catch (err) {
-      console.log(err.code, ': Creando carpeta de uploads...');
+      this.logger.warn('Carpeta de uploads no existe, creando...');
       // Si la carpeta no existe, la crea
       await fs.mkdir(this.uploadPath, { recursive: true });
     }
   }
 
   async saveFile(file: Express.Multer.File): Promise<string> {
-    await this.ensureUploadDirectory();
     const filename = crypto.randomUUID() + path.extname(file.originalname);
     const filePath = path.join(this.uploadPath, filename);
 
@@ -44,7 +52,8 @@ export class LocalStorageStrategy extends StorageStrategy {
       await fs.unlink(filePath);
     } catch (error) {
       if (error.code === 'ENOENT') {
-        console.error(`File not found: ${filePath}`);
+        // Si el archivo no existe, no es un error crítico
+        this.logger.error(`El archivo ${fileName} no existe en el sistema de archivos. Omitiendo eliminación.`);
         return;
       }
 

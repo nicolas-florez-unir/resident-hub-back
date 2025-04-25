@@ -144,4 +144,28 @@ export class PrismaUserRepository extends UserRepository {
   private encryptPassword(password: string): string {
     return bcrypt.hashSync(password, envs.encryptSaltRounds);
   }
+
+  async findAdministratorById(id: any): Promise<UserEntity | null> {
+    const user = await this.prisma.user.findFirst({
+      where: {
+        id: id,
+        role: 'administrator',
+      },
+    });
+
+    if (!user) return null;
+
+    return new UserEntity(
+      user.id,
+      user.condominium_id,
+      user.email,
+      user.password,
+      user.first_name,
+      user.last_name,
+      user.phone,
+      UserRoleMapper.toDomain(user.role),
+      user.created_at,
+      user.updated_at,
+    );
+  }
 }

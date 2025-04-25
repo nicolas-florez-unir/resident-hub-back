@@ -6,4 +6,5 @@ export abstract class UserRepository {
   abstract findByEmail(email: string): Promise<UserEntity | null>;
   abstract findById(id: number): Promise<UserEntity | null>;
   abstract update(user: UserEntity): Promise<UserEntity | null>;
+  abstract findAdministratorById(id): Promise<UserEntity | null>;
 }

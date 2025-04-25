@@ -15,8 +15,6 @@
   <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/node-v22-ff3f59.svg" alt="Donate us"/></a>
 
 </p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
 
 # Backend de Resident Hub
 
@@ -26,8 +24,8 @@ Este es el backend para la aplicación Resident Hub. Está construido utilizando
 
 Antes de iniciar el proyecto, asegúrate de tener instalados los siguientes elementos:
 
-- Node.js (v16 o superior)
-- npm (v8 o superior)
+- Node.js (v22 o superior)
+- npm
 - Prisma CLI (`npm install -g prisma`)
 
 ## Instalación

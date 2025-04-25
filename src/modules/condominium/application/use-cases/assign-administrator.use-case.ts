@@ -1,15 +1,14 @@
 import { Injectable } from '@nestjs/common';
 import { CondominiumRepository } from '../../domain/repositories/condominium.repository';
-import { GetUserByIdUseCase } from '../../../user/application/use-cases/get-user-by-id.use-case';
-import { UserNotFoundException } from '@user/domain/exceptions/user-not-found.exception';
 import { CondominiumNotFoundException } from '../../domain/exceptions/condominiun-not-found.exception';
 import { CondominiumEntity } from '../../domain/entities/condominium.entity';
+import { GetAdministratorByIdUseCase } from '../../../user/application/use-cases/get-administrator-by-id.use-case';
 
 @Injectable()
 export class AssignAdministratorUseCase {
   constructor(
     private readonly condominiumRepository: CondominiumRepository,
-    private readonly getUserByIdUseCase: GetUserByIdUseCase,
+    private readonly getAdministratorByIdUseCase: GetAdministratorByIdUseCase,
   ) {}
 
   async execute(
@@ -25,19 +24,10 @@ export class AssignAdministratorUseCase {
       );
     }
 
-    const user = await this.getUserByIdUseCase.execute(userId);
+    const administrator =
+      await this.getAdministratorByIdUseCase.execute(userId);
 
-    if (!user) {
-      throw new UserNotFoundException(`User with ID ${userId} not found`);
-    }
-
-    if (!user.isAdministrator()) {
-      throw new UserNotFoundException(
-        `User Administrator with ID ${userId} not found`,
-      );
-    }
-
-    condominium.setAdministratorId(user.id);
+    condominium.setAdministrator(administrator);
 
     const condominiumUpdated =
       await this.condominiumRepository.update(condominium);

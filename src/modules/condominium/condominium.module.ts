@@ -11,6 +11,8 @@ import { LocalStorageStrategy } from '../files/application/strategies/local-stor
 import { StorageStrategy } from '../files/domain/strategies/storage.strategy';
 import { UpdateCondominiumLogoUseCase } from './application/use-cases/update-condominium-logo.use-case';
 import { DeleteCondominiumLogoUseCase } from './application/use-cases/delete-condominium-logo.use-case';
+import { UserRepository } from '@user/domain/repositories/user.repository';
+import { PrismaUserRepository } from '@user/infrastructure/repositories/prisma.user.repository';
 
 @Module({
   imports: [UserModule],
@@ -25,6 +27,10 @@ import { DeleteCondominiumLogoUseCase } from './application/use-cases/delete-con
     {
       provide: CondominiumRepository,
       useClass: PrismaCondominiumRepository,
+    },
+    {
+      provide: UserRepository,
+      useClass: PrismaUserRepository,
     },
     {
       provide: StorageStrategy,

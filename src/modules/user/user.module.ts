@@ -9,6 +9,7 @@ import { CreateUserUseCase } from './application/use-cases/create-user.use-case'
 import { GetUserByEmailUseCase } from './application/use-cases/get-user-by-email.use-case';
 import { UpdateUserUseCase } from './application/use-cases/update-user.use-case';
 import { ApplicationJwtService } from '@auth/infrastructure/jwt/application-jwt.service';
+import { GetAdministratorByIdUseCase } from './application/use-cases/get-administrator-by-id.use-case';
 
 @Module({
   controllers: [UserController],
@@ -19,11 +20,17 @@ import { ApplicationJwtService } from '@auth/infrastructure/jwt/application-jwt.
     CreateUserUseCase,
     GetUserByEmailUseCase,
     UpdateUserUseCase,
+    GetAdministratorByIdUseCase,
     {
       provide: UserRepository,
       useClass: PrismaUserRepository,
     },
   ],
-  exports: [CreateUserUseCase, GetUserByIdUseCase, GetUserByEmailUseCase],
+  exports: [
+    CreateUserUseCase,
+    GetUserByIdUseCase,
+    GetUserByEmailUseCase,
+    GetAdministratorByIdUseCase,
+  ],
 })
 export class UserModule {}

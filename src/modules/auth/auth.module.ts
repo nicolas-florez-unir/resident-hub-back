@@ -7,18 +7,9 @@ import { UserModule } from '@user/user.module';
 import { CondominiumModule } from '../condominium/condominium.module';
 import { ApplicationJwtService } from './infrastructure/jwt/application-jwt.service';
 import { JwtModule } from '@nestjs/jwt';
-import { envs } from '@common/env/env.validation';
 
 @Module({
-  imports: [
-    JwtModule.register({
-      global: true,
-      secret: envs.jwtSecret,
-      signOptions: { expiresIn: '1h' },
-    }),
-    UserModule,
-    CondominiumModule,
-  ],
+  imports: [JwtModule.register({global: true}), UserModule, CondominiumModule],
   controllers: [AuthController],
   providers: [ApplicationJwtService, UserSignUpUseCase, UserLogInUseCase],
 })

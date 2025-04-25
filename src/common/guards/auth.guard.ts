@@ -9,6 +9,7 @@ import { JwtService } from '@nestjs/jwt';
 import { Request } from 'express';
 import { UserFromRequestSchema } from '../schemas/user-from-request.schema';
 import { TokenError } from '@auth/domain/error/token.error';
+import { envs } from '@common/env/env.validation';
 
 @Injectable()
 export class AuthGuard implements CanActivate {
@@ -25,7 +26,9 @@ export class AuthGuard implements CanActivate {
     }
 
     try {
-      const payload = this.jwtService.verify(token);
+      const payload = this.jwtService.verify(token, {
+        secret: envs.jwt.access.secret,
+      });
 
       const tokenValidation = UserFromRequestSchema.validate(payload);
 

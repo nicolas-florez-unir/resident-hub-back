@@ -10,6 +10,7 @@ import { UserFactory } from 'test/utils/factories/user.factory';
 import { UpdateUserRequest } from '@user/infrastructure/requests/UpdateUser.request';
 import { UserEntity } from '@user/domain/entities/User.entity';
 import { CondominiumFactory } from 'test/utils/factories/condominium.factory';
+import { UserRole } from '@user/domain/enums/UserRole.enum';
 
 describe('UserController', () => {
   let userController: UserController;
@@ -42,7 +43,11 @@ describe('UserController', () => {
   describe('getUserInfo', () => {
     it('should return user info when user exists', async () => {
       const mockUser = UserFactory.create();
-      const mockUserFromRequest: UserFromRequestInterface = { id: 1 };
+      const mockUserFromRequest: UserFromRequestInterface = {
+        id: mockUser.id,
+        condominium_id: mockUser.condominiumId,
+        role: mockUser.role,
+      };
 
       userRepository.findById.mockResolvedValue(mockUser);
 
@@ -53,13 +58,15 @@ describe('UserController', () => {
     });
 
     it('should throw an error when user does not exist', async () => {
-      const mockUserFromRequest: UserFromRequestInterface = { id: 1 };
+      const mockUserFromRequest: UserFromRequestInterface = {
+        id: 1,
+        condominium_id: 1,
+        role: UserRole.Administrator,
+      };
 
       userRepository.findById.mockResolvedValue(null);
 
-      await expect(
-        userController.getUserInfo(mockUserFromRequest),
-      ).rejects.toThrow();
+      await expect(userController.getUserInfo(mockUserFromRequest)).rejects.toThrow();
       expect(userRepository.findById).toHaveBeenCalledWith(1);
     });
   });
@@ -68,7 +75,11 @@ describe('UserController', () => {
     it('should return updated user info when user exists', async () => {
       const mockCondominium = CondominiumFactory.create();
       const mockUser = UserFactory.create({ id: 1, email: 'old@email.com' });
-      const mockUserFromRequest: UserFromRequestInterface = { id: mockUser.id };
+      const mockUserFromRequest: UserFromRequestInterface = {
+        id: mockUser.id,
+        condominium_id: mockUser.condominiumId,
+        role: mockUser.role,
+      };
       const updateUserRequest: UpdateUserRequest = {
         email: 'new@email.com',
         firstName: mockUser.firstName,
@@ -103,7 +114,11 @@ describe('UserController', () => {
 
     it('should throw an error when user does not exist', async () => {
       const mockUser = UserFactory.create();
-      const mockUserFromRequest: UserFromRequestInterface = { id: mockUser.id };
+      const mockUserFromRequest: UserFromRequestInterface = {
+        id: mockUser.id,
+        condominium_id: 0,
+        role: UserRole.Administrator,
+      };
 
       userRepository.findById.mockResolvedValue(null);
 

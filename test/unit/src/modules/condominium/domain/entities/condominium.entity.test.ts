@@ -1,6 +1,7 @@
 import { CondominiumEntity } from '@condominium/domain/entities/condominium.entity';
 import { UserEntity } from '@user/domain/entities/User.entity';
 import { UserRole } from '@user/domain/enums/UserRole.enum';
+import { UserFactory } from 'test/utils/factories/user.factory';
 
 describe('CondominiumEntity', () => {
   let condominium: CondominiumEntity;
@@ -10,7 +11,8 @@ describe('CondominiumEntity', () => {
       1,
       'Condo Name',
       '123 Main St',
-      101,
+      null,
+      null,
       new Date('2023-01-01'),
       new Date('2023-01-02'),
     );
@@ -34,12 +36,6 @@ describe('CondominiumEntity', () => {
     expect(condominium.getAddress()).toBe('456 Elm St');
   });
 
-  it('should get and set administratorId', () => {
-    expect(condominium.getAdministratorId()).toBe(101);
-    condominium.setAdministratorId(202);
-    expect(condominium.getAdministratorId()).toBe(202);
-  });
-
   it('should get and set createdAt', () => {
     expect(condominium.getCreatedAt()).toEqual(new Date('2023-01-01'));
     const newDate = new Date('2023-02-01');
@@ -55,7 +51,7 @@ describe('CondominiumEntity', () => {
   });
 
   it('should get and set administrator', () => {
-    expect(condominium.getAdministrator()).toBeUndefined();
+    expect(condominium.getAdministrator()).toBeNull();
     const user = new UserEntity(
       1,
       1,
@@ -71,4 +67,10 @@ describe('CondominiumEntity', () => {
     condominium.setAdministrator(user);
     expect(condominium.getAdministrator()).toBe(user);
   });
+
+  it('should set logo', () => {
+    const logo = 'logo.png';
+    condominium.setLogo(logo);
+    expect(condominium.getLogo()).toBe(logo);
+  })
 });

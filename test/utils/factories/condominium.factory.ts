@@ -10,7 +10,8 @@ export class CondominiumFactory {
       overrides?.getId() ?? 1,
       overrides?.getName() ?? faker.company.name(),
       overrides?.getAddress() ?? faker.location.streetAddress(),
-      overrides?.getAdministratorId() ?? 1,
+      null,
+      null,
       overrides?.getCreatedAt() ?? now,
       overrides?.getUpdatedAt() ?? now,
     );

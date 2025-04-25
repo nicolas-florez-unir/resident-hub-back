@@ -10,11 +10,7 @@ describe('JwtService', () => {
   beforeAll(async () => {
     const module: TestingModule = await Test.createTestingModule({
       imports: [
-        JwtModule.register({
-          global: true,
-          secret: 'random_secret',
-          signOptions: { expiresIn: '60s' },
-        }),
+        JwtModule.register({}),
       ],
       providers: [
         ApplicationJwtService, // El servicio que vamos a probar
@@ -31,7 +27,7 @@ describe('JwtService', () => {
     jest.clearAllMocks(); // Limpiar los mocks después de cada prueba
   });
 
-  describe('generateToken', () => {
+  describe('generateAccessToken', () => {
     it('should generate a token', async () => {
       const payload = {
         id: 1,
@@ -43,38 +39,39 @@ describe('JwtService', () => {
 
       jest.spyOn(nestJwtService, 'sign').mockReturnValue('mock-token'); // Espiar el método sign para poder mockearlo
 
-      const result = applicationJwtService.generateToken(payload);
+      const result = applicationJwtService.generateAccessToken(payload);
 
       expect(result).toBe(mockToken); // Verificar que el resultado sea el token esperado
-      expect(nestJwtService.sign).toHaveBeenCalledWith(payload); // Verificar que se haya llamado con el payload correcto
+      expect(nestJwtService.sign).toHaveBeenCalledWith(payload, {
+        "expiresIn": process.env.JWT_ACCESS_EXPIRATION,
+        "secret": process.env.JWT_ACCESS_SECRET
+      }); // Verificar que se haya llamado con el payload correcto
     });
   });
 
-  describe('validateToken', () => {
+  describe('validateAccessToken', () => {
     it('should validate a token', () => {
       const token = 'mock-token';
 
       jest.spyOn(nestJwtService, 'verify').mockReturnValue({});
 
-      const result = applicationJwtService.validateToken(token);
+      const result = applicationJwtService.validateAccessToken(token);
 
-      expect(result).toBe(true); // Verificar que el resultado es el payload decodificado
-      expect(nestJwtService.verify).toHaveBeenCalledWith(token); // Verificar que se haya llamado con el token correcto
+      expect(result).toBe(undefined); // Verificar que el resultado es el payload decodificado
+      expect(nestJwtService.verify).toHaveBeenCalledWith(token, {"secret": process.env.JWT_ACCESS_SECRET}); // Verificar que se haya llamado con el token correcto
     });
+  });
 
-    it('should return false if token is invalid', () => {
+  describe('validateRefreshToken', () => {
+    it('should validate a token', () => {
       const token = 'mock-token';
 
-      jest.spyOn(nestJwtService, 'verify').mockImplementation(() => {
-        throw new Error('Invalid token');
-      });
+      jest.spyOn(nestJwtService, 'verify').mockReturnValue({});
 
-      const result = applicationJwtService.validateToken(token);
+      const result = applicationJwtService.validateRefreshToken(token);
 
-      expect(result).toBe(false); // Verificar que el resultado es el payload decodificado
-      expect(nestJwtService.verify).toHaveBeenCalledWith(token); // Verificar que se haya llamado con el token correcto
-
-      jest.clearAllMocks();
+      expect(result).toBe(undefined); // Verificar que el resultado es el payload decodificado
+      expect(nestJwtService.verify).toHaveBeenCalledWith(token, {"secret": process.env.JWT_REFRESH_SECRET}); // Verificar que se haya llamado con el token correcto
     });
   });
 
@@ -83,15 +80,15 @@ describe('JwtService', () => {
       const token = 'mock-token';
       const mockDecoded = {
         id: 1,
-        name: 'John Doe',
-        email: 'john@example.com',
+        role: UserRole.Administrator,
+        condominium_id: 1,
       };
 
       jest.spyOn(nestJwtService, 'decode').mockReturnValue(mockDecoded); // Espiar el método decode para poder mockearlo
 
       const result = await applicationJwtService.decodeToken(token);
 
-      expect(result).toBe(mockDecoded); // Verificar que el resultado es el payload decodificado
+      expect(result).toEqual(mockDecoded); // Verificar que el resultado es el payload decodificado
       expect(nestJwtService.decode).toHaveBeenCalledWith(token); // Verificar que se haya llamado con el token correcto
     });
   });

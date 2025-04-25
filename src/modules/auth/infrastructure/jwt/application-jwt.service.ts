@@ -1,3 +1,4 @@
+import { envs } from '@common/env/env.validation';
 import { Injectable, Logger } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { UserRole } from '@user/domain/enums/UserRole.enum';
@@ -10,25 +11,41 @@ type TokenPayload = {
 
 @Injectable()
 export class ApplicationJwtService {
-  private readonly logger: Logger = new Logger(ApplicationJwtService.name);
-
   constructor(private readonly jwtService: JwtService) {}
 
-  generateToken(payload: TokenPayload): string {
-    return this.jwtService.sign(payload);
+  generateAccessToken(payload: TokenPayload): string {
+    return this.jwtService.sign(payload, {
+      secret: envs.jwt.access.secret,
+      expiresIn: envs.jwt.access.expiration,
+    });
+  }
+
+  generateRefreshToken(payload: TokenPayload): string {
+    return this.jwtService.sign(payload, {
+      secret: envs.jwt.refresh.secret,
+      expiresIn: envs.jwt.refresh.expiration,
+    });
   }
 
   decodeToken(token: string): TokenPayload {
-    return this.jwtService.decode(token);
+    const decoded = this.jwtService.decode(token);
+
+    return {
+      id: decoded['id'],
+      condominium_id: decoded['condominium_id'],
+      role: decoded['role'],
+    };
   }
 
-  validateToken(token: string): boolean {
-    try {
-      this.jwtService.verify(token);
-      return true;
-    } catch (e) {
-      this.logger.warn(e);
-      return false;
-    }
+  validateAccessToken(accessToken: string) {
+    this.jwtService.verify(accessToken, {
+      secret: envs.jwt.access.secret,
+    });
+  }
+
+  validateRefreshToken(refreshToken: string) {
+    this.jwtService.verify(refreshToken, {
+      secret: envs.jwt.refresh.secret,
+    });
   }
 }

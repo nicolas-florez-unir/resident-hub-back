@@ -5,11 +5,10 @@ export class CondominiumEntity {
     private id: number,
     private name: string,
     private address: string,
-    private administratorId: number,
-    private logo: string,
+    private logo: string | null,
+    private administrator: UserEntity | null,
     private createdAt: Date,
     private updatedAt: Date,
-    private administrator?: UserEntity,
   ) {}
 
   public getId(): number {
@@ -34,14 +33,6 @@ export class CondominiumEntity {
 
   public setAddress(address: string): void {
     this.address = address;
-  }
-
-  public getAdministratorId(): number {
-    return this.administratorId;
-  }
-
-  public setAdministratorId(administratorId: number): void {
-    this.administratorId = administratorId;
   }
 
   public getCreatedAt(): Date {
