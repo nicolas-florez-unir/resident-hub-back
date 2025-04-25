@@ -15,7 +15,7 @@ module.exports = {
     node: true,
     jest: true,
   },
-  ignorePatterns: ['.eslintrc.js', '.*.test.ts'],
+  ignorePatterns: ['.eslintrc.js'],
   rules: {
     '@typescript-eslint/interface-name-prefix': 'off',
     '@typescript-eslint/explicit-function-return-type': 'off',
@@ -29,4 +29,10 @@ module.exports = {
       },
     ],
   },
+  overrides: [{
+    files: ['**/*.spec.ts', '**/*.test.ts'],
+    rules: {
+      'max-len': 'off'
+    }
+  }]
 };
