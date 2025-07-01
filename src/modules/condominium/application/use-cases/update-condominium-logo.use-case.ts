@@ -1,6 +1,6 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { CondominiumRepository } from '@condominium/domain/repositories/condominium.repository';
-import { StorageStrategy } from 'src/modules/files/domain/strategies/storage.strategy';
+import { StorageStrategy } from '@files/domain/strategies/storage.strategy';
 import { CondominiumEntity } from '@condominium/domain/entities/condominium.entity';
 import { DeleteCondominiumLogoUseCase } from './delete-condominium-logo.use-case';
 

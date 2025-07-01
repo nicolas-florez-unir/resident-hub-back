@@ -4,17 +4,17 @@ import { Test, TestingModule } from '@nestjs/testing';
 
 import { AuthController } from '@auth/infrastructure/controllers/auth.controller';
 import { UserSignUpUseCase } from '@auth/application/use-cases/user-sign-up.use-case';
-import { UserSignUpRequest } from '@auth/infrastructure/requests/UserSignUp.request';
+import { UserSignUpRequest } from '@auth/infrastructure/requests/user-sign-up.request';
 import { UserRepository } from '@user/domain/repositories/user.repository';
-import { PrismaUserRepository } from '@user/infrastructure/repositories/prisma.user.repository';
+import { PrismaUserRepository } from '@user/infrastructure/repositories/prisma-user.repository';
 import { PrismaService } from '@common/database/prisma/prisma.service';
 import { PrismaUtils } from 'test/utils/PrismaUtils';
 import { UserLogInUseCase } from '@auth/application/use-cases/user-log-in.use-case';
-import { UserLogInRequest } from '@auth/infrastructure/requests/UserLogIn.request';
+import { UserLogInRequest } from '@auth/infrastructure/requests/user-log-in.request';
 import { UserFactory } from 'test/utils/factories/user.factory';
 import { ApplicationJwtService } from '@auth/infrastructure/jwt/application-jwt.service';
 import { JwtModule } from '@nestjs/jwt';
-import { UserRole } from '@user/domain/enums/UserRole.enum';
+import { UserRole } from '@user/domain/enums/user-role.enum';
 import { GetUserByIdUseCase } from '@user/application/use-cases/get-user-by-id.use-case';
 import { CreateUserUseCase } from '@user/application/use-cases/create-user.use-case';
 import { GetUserByEmailUseCase } from '@user/application/use-cases/get-user-by-email.use-case';
@@ -22,8 +22,8 @@ import { GetCondominiumByIdUseCase } from '@condominium/application/use-cases/ge
 import { CondominiumRepository } from '@condominium/domain/repositories/condominium.repository';
 import { PrismaCondominiumRepository } from '@condominium/infrastructure/repositories/prisma-condominium.repository';
 import { CondominiumFactory } from 'test/utils/factories/condominium.factory';
-import { UserEntity } from '@user/domain/entities/User.entity';
-import { CreateUserDto } from '@user/domain/dtos/CreateUserDto';
+import { UserEntity } from '@user/domain/entities/user.entity';
+import { CreateUserDto } from '@user/domain/dtos/create-user.dto';
 
 describe('AuthController', () => {
   let app: INestApplication;

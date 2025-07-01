@@ -19,6 +19,23 @@ enum UserRole {
   house_owner
 }
 
+enum FineType {
+  non_compliance
+  late_payment
+}
+
+enum FineStatus {
+  pending
+  paid
+  appealed
+}
+
+enum Currency {
+  eur
+  usd
+  cop
+}
+
 model User {
   id             Int      @id @default(autoincrement())
   condominium_id Int
@@ -62,6 +79,24 @@ model House {
 
   Condominium Condominium @relation(fields: [condominium_id], references: [id])
   User        User        @relation(fields: [owner_id], references: [id])
+  Fine        Fine[]
 
   @@map("houses")
+}
+
+model Fine {
+  id          Int        @id @default(autoincrement())
+  type        FineType
+  house_id    Int
+  issued_date DateTime   @default(now())
+  amount      Float
+  currency    Currency
+  status      FineStatus @default(pending)
+  reason      String
+  created_at  DateTime   @default(now())
+  updated_at  DateTime   @updatedAt
+
+  House House @relation(fields: [house_id], references: [id])
+
+  @@map("fines")
 }

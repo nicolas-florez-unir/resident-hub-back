@@ -1,6 +1,6 @@
 import { DeleteCondominiumLogoUseCase } from '@condominium/application/use-cases/delete-condominium-logo.use-case';
 import { Test, TestingModule } from '@nestjs/testing';
-import { StorageStrategy } from 'src/modules/files/domain/strategies/storage.strategy';
+import { StorageStrategy } from '@files/domain/strategies/storage.strategy';
 import { CondominiumFactory } from 'test/utils/factories/condominium.factory';
 
 describe('UpdateCondominiumLogoUseCase', () => {

@@ -13,23 +13,22 @@ import {
   Res,
   UnauthorizedException,
 } from '@nestjs/common';
+import { Request, Response } from 'express';
 
 import { InvalidCredentialsException } from '@auth/domain/exceptions/invalid-credentials.exception';
 import { ApplicationJwtService } from '../jwt/application-jwt.service';
-import { UserLoggedPresenter } from '../presenters/user-logged.presenter';
-import { UserLogInRequest } from '../requests/UserLogIn.request';
-import { UserLogInUseCase } from '@auth/application/use-cases/user-log-in.use-case';
-import { UserPresenter } from '../presenters/User.presenter';
-import { UserSignUpRequest } from '../requests/UserSignUp.request';
-import { UserSignUpUseCase } from '@auth/application/use-cases/user-sign-up.use-case';
+import { UserLoggedPresenter, UserPresenter } from '../presenters';
+import { UserLogInRequest, UserSignUpRequest } from '../requests';
+import { UserLogInUseCase, UserSignUpUseCase } from '@auth/application/use-cases';
 import { GetUserByIdUseCase } from '@user/application/use-cases/get-user-by-id.use-case';
-import { CreateUserDto } from '@user/domain/dtos/CreateUserDto';
-import { UserNotFoundException } from '@user/domain/exceptions/user-not-found.exception';
+import { CreateUserDto } from '@user/domain/dtos/create-user.dto';
+import {
+  UserNotFoundException,
+  UserAlreadyExistException,
+} from '@user/domain/exceptions';
 import { TokenError } from '@auth/domain/error/token.error';
 import { EntityNotFoundException } from '@common/exceptions/entity-not-found.exception';
-import { UserAlreadyExistException } from '@user/domain/exceptions/user-already-exist.exception';
-import { Request, Response } from 'express';
-import { UserEntity } from '@user/domain/entities/User.entity';
+import { UserEntity } from '@user/domain/entities/user.entity';
 
 @Controller('auth')
 export class AuthController {
@@ -55,7 +54,7 @@ export class AuthController {
         ),
       );
 
-      return UserPresenter.toObject(newUser);
+      return UserPresenter.present(newUser);
     } catch (error) {
       if (error instanceof UserAlreadyExistException) {
         throw new ConflictException(error.message);

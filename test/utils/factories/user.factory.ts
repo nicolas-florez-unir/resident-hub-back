@@ -1,7 +1,7 @@
 import { faker } from '@faker-js/faker';
-import { UserRole } from '@user/domain/enums/UserRole.enum';
+import { UserRole } from '@user/domain/enums/user-role.enum';
 
-import { UserEntity } from 'src/modules/user/domain/entities/User.entity';
+import { UserEntity } from '@user/domain/entities/user.entity';
 
 export class UserFactory {
   public static create(overrides?: Partial<UserEntity>): UserEntity {

@@ -4,7 +4,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { PrismaCondominiumRepository } from 'src/modules/condominium/infrastructure/repositories/prisma-condominium.repository';
 import { CondominiumFactory } from 'test/utils/factories/condominium.factory';
 import { PrismaUtils } from 'test/utils/PrismaUtils';
-import { CreateCondominiumDto } from 'src/modules/condominium/domain/dtos/CreateCondominium.dto';
+import { CreateCondominiumDto } from '@condominium/domain/dtos/create-condominium.dto';
 import { CondominiumEntity } from 'src/modules/condominium/domain/entities/condominium.entity';
 
 describe('PrismaCondominiumRepository', () => {

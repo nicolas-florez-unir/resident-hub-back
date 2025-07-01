@@ -3,7 +3,7 @@ import { UpdateCondominiumLogoUseCase } from '@condominium/application/use-cases
 import { CondominiumRepository } from '@condominium/domain/repositories/condominium.repository';
 import { Logger } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
-import { StorageStrategy } from 'src/modules/files/domain/strategies/storage.strategy';
+import { StorageStrategy } from '@files/domain/strategies/storage.strategy';
 import { CondominiumFactory } from 'test/utils/factories/condominium.factory';
 
 describe('UpdateCondominiumLogoUseCase', () => {

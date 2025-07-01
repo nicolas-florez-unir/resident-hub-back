@@ -1,7 +1,7 @@
-import { UserEntity } from '@user/domain/entities/User.entity';
+import { UserEntity } from '@user/domain/entities/user.entity';
 
 export class UserPresenter {
-  public static toObject(userEntity: UserEntity) {
+  public static present(userEntity: UserEntity) {
     return {
       id: userEntity.id,
       email: userEntity.email,

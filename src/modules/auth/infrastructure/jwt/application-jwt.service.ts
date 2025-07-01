@@ -1,7 +1,8 @@
-import { envs } from '@common/env/env.validation';
 import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { UserRole } from '@user/domain/enums/UserRole.enum';
+
+import { envs } from '@common/env/env.validation';
+import { UserRole } from '@user/domain/enums/user-role.enum';
 
 type TokenPayload = {
   id: number;

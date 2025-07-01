@@ -1,6 +1,6 @@
 import { CondominiumEntity } from '@condominium/domain/entities/condominium.entity';
-import { UserEntity } from '@user/domain/entities/User.entity';
-import { UserRole } from '@user/domain/enums/UserRole.enum';
+import { UserEntity } from '@user/domain/entities/user.entity';
+import { UserRole } from '@user/domain/enums/user-role.enum';
 
 describe('CondominiumEntity', () => {
   let condominium: CondominiumEntity;

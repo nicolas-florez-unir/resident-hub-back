@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { CondominiumRepository } from '../../domain/repositories/condominium.repository';
 import { CondominiumNotFoundException } from '../../domain/exceptions/condominiun-not-found.exception';
 import { CondominiumEntity } from '../../domain/entities/condominium.entity';
-import { GetAdministratorByIdUseCase } from '../../../user/application/use-cases/get-administrator-by-id.use-case';
+import { GetAdministratorByIdUseCase } from '@user/application/use-cases';
 
 @Injectable()
 export class AssignAdministratorUseCase {

@@ -1,4 +1,4 @@
-import { UserRole } from '@user/domain/enums/UserRole.enum';
+import { UserRole } from '@user/domain/enums/user-role.enum';
 import { IsEmail, IsIn, IsNotEmpty, IsString } from 'class-validator';
 
 export class UpdateUserRequest {

@@ -17,21 +17,26 @@ import {
   UseInterceptors,
 } from '@nestjs/common';
 import { UserNotFoundException } from '@user/domain/exceptions/user-not-found.exception';
-import { CreateCondominiumRequest } from '../requests/CreateCondominium.request';
-import { CreateCondominiumDto } from '../../domain/dtos/CreateCondominium.dto';
-import { CondominiumPresenter } from '../presenters/Condominium.presenter';
-import { CreateCondominiumUseCase } from '../../application/use-cases/create-condominium.use-case';
-import { AssignAdministratorUseCase } from '../../application/use-cases/assign-administrator.use-case';
+import { CreateCondominiumRequest } from '../requests/create-condominium.request';
+import { CreateCondominiumDto } from '../../domain/dtos/create-condominium.dto';
+import { CondominiumPresenter } from '../presenters/condominium.presenter';
 import { CondominiumNotFoundException } from '../../domain/exceptions/condominiun-not-found.exception';
 import { UserFromRequest } from '@common/decorators/user-from-request.decorator';
 import { UserFromRequestInterface } from '@common/interfaces/user-from-request.interface';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { RequiresRoles } from '@common/decorators/requires-role.decorator';
-import { UserRole } from '@user/domain/enums/UserRole.enum';
-import { UpdateCondominiumLogoUseCase } from '@condominium/application/use-cases/update-condominium-logo.use-case';
-import { GetCondominiumByIdUseCase } from '../../application/use-cases/get-condominium-by-id.use-case';
+import { UserRole } from '@user/domain/enums/user-role.enum';
 import { AuthGuard } from '@common/guards/auth.guard';
+import {
+  CreateCondominiumUseCase,
+  AssignAdministratorUseCase,
+  GetCondominiumByIdUseCase,
+  UpdateCondominiumLogoUseCase,
+  UpdateCondominiumUseCase,
+} from '../../application/use-cases';
+import { UpdateCondominiumRequest } from '../requests/update-condominium.request';
 
+@UseGuards(AuthGuard)
 @Controller('condominium')
 export class CondominiumController {
   constructor(
@@ -39,9 +44,9 @@ export class CondominiumController {
     private readonly assignAdministratorUseCase: AssignAdministratorUseCase,
     private readonly getCondominiumByIdUseCase: GetCondominiumByIdUseCase,
     private readonly updateCondominiumLogoUseCase: UpdateCondominiumLogoUseCase,
+    private readonly updateCondominiumUseCase: UpdateCondominiumUseCase,
   ) {}
 
-  @UseGuards(AuthGuard)
   @Get('/info')
   async getCondominiumInfo(@UserFromRequest() userFromRequest: UserFromRequestInterface) {
     try {
@@ -49,7 +54,7 @@ export class CondominiumController {
         userFromRequest.condominium_id,
       );
 
-      return CondominiumPresenter.toObject(condominium);
+      return CondominiumPresenter.present(condominium);
     } catch (error) {
       if (error instanceof CondominiumNotFoundException) {
         throw new NotFoundException(error.message);
@@ -66,7 +71,7 @@ export class CondominiumController {
         new CreateCondominiumDto(request.name, request.address),
       );
 
-      return CondominiumPresenter.toObject(condominium);
+      return CondominiumPresenter.present(condominium);
     } catch (error) {
       throw new InternalServerErrorException(error.message);
     }
@@ -80,13 +85,38 @@ export class CondominiumController {
     try {
       const condominium = await this.assignAdministratorUseCase.execute(id, userId);
 
-      return CondominiumPresenter.toObject(condominium);
+      return CondominiumPresenter.present(condominium);
     } catch (error) {
       if (error instanceof CondominiumNotFoundException) {
         throw new NotFoundException(error.message);
       }
 
       if (error instanceof UserNotFoundException) {
+        throw new NotFoundException(error.message);
+      }
+
+      throw new InternalServerErrorException(error.message);
+    }
+  }
+
+  @RequiresRoles([UserRole.Administrator])
+  @Put()
+  async updateCondominium(
+    @UserFromRequest() userFromRequest: UserFromRequestInterface,
+    @Body() request: UpdateCondominiumRequest,
+  ) {
+    try {
+      const condominium = await this.updateCondominiumUseCase.execute(
+        userFromRequest.condominium_id,
+        {
+          name: request.name,
+          address: request.address,
+        },
+      );
+
+      return CondominiumPresenter.present(condominium);
+    } catch (error) {
+      if (error instanceof CondominiumNotFoundException) {
         throw new NotFoundException(error.message);
       }
 

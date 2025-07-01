@@ -1,4 +1,3 @@
-import { UserRole } from '@user/domain/enums/UserRole.enum';
 import {
   IsEmail,
   IsIn,
@@ -7,6 +6,7 @@ import {
   IsPositive,
   IsString,
 } from 'class-validator';
+import { UserRole } from '@user/domain/enums/user-role.enum';
 
 export class UserSignUpRequest {
   @IsString()

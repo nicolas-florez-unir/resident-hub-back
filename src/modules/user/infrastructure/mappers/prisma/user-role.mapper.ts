@@ -1,5 +1,5 @@
 import { UserRole as UserRolePrisma } from '@prisma/client';
-import { UserRole as UserRoleDomain } from '@user/domain/enums/UserRole.enum';
+import { UserRole as UserRoleDomain } from '@user/domain/enums/user-role.enum';
 
 export class UserRoleMapper {
   static toDomain(role: UserRolePrisma): UserRoleDomain {

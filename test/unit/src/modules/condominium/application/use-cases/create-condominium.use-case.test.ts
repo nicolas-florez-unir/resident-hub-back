@@ -1,5 +1,5 @@
 import { CreateCondominiumUseCase } from '@condominium/application/use-cases/create-condominium.use-case';
-import { CreateCondominiumDto } from '@condominium/domain/dtos/CreateCondominium.dto';
+import { CreateCondominiumDto } from '@condominium/domain/dtos/create-condominium.dto';
 import { CondominiumEntity } from '@condominium/domain/entities/condominium.entity';
 import { CondominiumRepository } from '@condominium/domain/repositories/condominium.repository';
 import { Test, TestingModule } from '@nestjs/testing';

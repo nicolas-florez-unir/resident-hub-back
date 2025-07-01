@@ -1,4 +1,4 @@
-import { UserRole } from '../enums/UserRole.enum';
+import { UserRole } from '../enums/user-role.enum';
 
 export class CreateUserDto {
   constructor(

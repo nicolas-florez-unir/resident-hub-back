@@ -1,11 +1,12 @@
 import { Injectable, Logger } from '@nestjs/common';
+
 import { CondominiumRepository } from '../../domain/repositories/condominium.repository';
 import { CondominiumEntity } from '../../domain/entities/condominium.entity';
-
-import { CreateCondominiumDto } from '../../domain/dtos/CreateCondominium.dto';
+import { CreateCondominiumDto } from '../../domain/dtos/create-condominium.dto';
 import { PrismaService } from '@common/database/prisma/prisma.service';
 import { PrismaQueryError } from 'prisma/enums/PrismaQueryErrors.enum';
-import { UserRepository } from '../../../user/domain/repositories/user.repository';
+import { UserRepository } from '@user/domain/repositories/user.repository';
+import { PrismaCondominiumMapper } from '../mappers/prisma/prisma-condominium.mapper';
 
 @Injectable()
 export class PrismaCondominiumRepository implements CondominiumRepository {
@@ -24,15 +25,7 @@ export class PrismaCondominiumRepository implements CondominiumRepository {
       },
     });
 
-    return new CondominiumEntity(
-      createdCondominium.id,
-      createdCondominium.name,
-      createdCondominium.address,
-      createdCondominium.logo,
-      null,
-      createdCondominium.created_at,
-      createdCondominium.updated_at,
-    );
+    return PrismaCondominiumMapper.toDomain(createdCondominium);
   }
 
   async update(condominium: CondominiumEntity): Promise<CondominiumEntity> {
@@ -56,22 +49,10 @@ export class PrismaCondominiumRepository implements CondominiumRepository {
         },
       });
 
-      const entity = new CondominiumEntity(
-        updated.id,
-        updated.name,
-        updated.address,
-        updated.logo,
-        null,
-        updated.created_at,
-        updated.updated_at,
-      );
+      const entity = PrismaCondominiumMapper.toDomain(updated, null);
+      const administrator = await this.userRepository.findById(updated.administrator_id);
 
-      if (updated.administrator_id) {
-        const administrator = await this.userRepository.findById(
-          updated.administrator_id,
-        );
-        if (administrator) entity.setAdministrator(administrator);
-      }
+      if (administrator) entity.setAdministrator(administrator);
 
       return entity;
     } catch (error) {
@@ -92,26 +73,14 @@ export class PrismaCondominiumRepository implements CondominiumRepository {
       },
     });
 
-    if (!condominium) {
-      return null;
-    }
+    if (!condominium) return null;
 
-    const entity = new CondominiumEntity(
-      condominium.id,
-      condominium.name,
-      condominium.address,
-      condominium.logo,
-      null,
-      condominium.created_at,
-      condominium.updated_at,
+    const entity = PrismaCondominiumMapper.toDomain(condominium, null);
+    const administrator = await this.userRepository.findById(
+      condominium.administrator_id,
     );
 
-    if (condominium.administrator_id) {
-      const administrator = await this.userRepository.findById(
-        condominium.administrator_id,
-      );
-      if (administrator) entity.setAdministrator(administrator);
-    }
+    if (administrator) entity.setAdministrator(administrator);
 
     return entity;
   }

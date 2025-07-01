@@ -1,4 +1,4 @@
-import { UserEntity } from '@user/domain/entities/User.entity';
+import { UserEntity } from '@user/domain/entities/user.entity';
 
 export class CondominiumEntity {
   constructor(

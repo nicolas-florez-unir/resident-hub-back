@@ -1,9 +1,9 @@
 import { GetAdministratorByIdUseCase } from '@user/application/use-cases/get-administrator-by-id.use-case';
 import { UserRepository } from '@user/domain/repositories/user.repository';
-import { UserEntity } from '@user/domain/entities/User.entity';
+import { UserEntity } from '@user/domain/entities/user.entity';
 import { UserNotFoundException } from '@user/domain/exceptions/user-not-found.exception';
 import { UserFactory } from 'test/utils/factories/user.factory';
-import { UserRole } from '@user/domain/enums/UserRole.enum';
+import { UserRole } from '@user/domain/enums/user-role.enum';
 import { Test, TestingModule } from '@nestjs/testing';
 
 describe('GetAdministratorByIdUseCase', () => {

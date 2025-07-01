@@ -1,0 +1,4 @@
+export enum FineType {
+  NON_COMPLIANCE = 'NON_COMPLIANCE',
+  LATE_PAYMENT = 'LATE_PAYMENT',
+}

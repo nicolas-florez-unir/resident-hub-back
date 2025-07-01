@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
-import { UserEntity } from '@user/domain/entities/User.entity';
-import { CreateUserDto } from '@user/domain/dtos/CreateUserDto';
+import { UserEntity } from '@user/domain/entities/user.entity';
+import { CreateUserDto } from '@user/domain/dtos/create-user.dto';
 import { CreateUserUseCase } from '@user/application/use-cases/create-user.use-case';
 import { GetCondominiumByIdUseCase } from '@condominium/application/use-cases/get-condominium-by-id.use-case';
 

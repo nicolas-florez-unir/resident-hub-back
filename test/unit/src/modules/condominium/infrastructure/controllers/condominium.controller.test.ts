@@ -4,16 +4,17 @@ import { UserNotFoundException } from '@user/domain/exceptions/user-not-found.ex
 import { CondominiumController } from '@condominium/infrastructure/controllers/condominium.controller';
 import { CreateCondominiumUseCase } from '@condominium/application/use-cases/create-condominium.use-case';
 import { AssignAdministratorUseCase } from '@condominium/application/use-cases/assign-administrator.use-case';
-import { CreateCondominiumRequest } from '@condominium/infrastructure/requests/CreateCondominium.request';
+import { CreateCondominiumRequest } from '@condominium/infrastructure/requests/create-condominium.request';
 import { CondominiumFactory } from 'test/utils/factories/condominium.factory';
-import { CondominiumPresenter } from '@condominium/infrastructure/presenters/Condominium.presenter';
+import { CondominiumPresenter } from '@condominium/infrastructure/presenters/condominium.presenter';
 import { CondominiumNotFoundException } from '@condominium/domain/exceptions/condominiun-not-found.exception';
 import { JwtModule } from '@nestjs/jwt';
 import { GetCondominiumByIdUseCase } from '@condominium/application/use-cases/get-condominium-by-id.use-case';
 import { UpdateCondominiumLogoUseCase } from '@condominium/application/use-cases/update-condominium-logo.use-case';
 import { UserFactory } from 'test/utils/factories/user.factory';
-import { UserRole } from '@user/domain/enums/UserRole.enum';
+import { UserRole } from '@user/domain/enums/user-role.enum';
 import { UserFromRequestInterface } from '@common/interfaces/user-from-request.interface';
+import { UpdateCondominiumUseCase } from '@condominium/application/use-cases';
 
 describe('CondominiumController', () => {
   let controller: CondominiumController;
@@ -57,6 +58,12 @@ describe('CondominiumController', () => {
             execute: jest.fn(),
           },
         },
+        {
+          provide: UpdateCondominiumUseCase,
+          useValue: {
+            execute: jest.fn(),
+          },
+        },
       ],
     }).compile();
 
@@ -90,7 +97,7 @@ describe('CondominiumController', () => {
         name: request.name,
         address: request.address,
       });
-      expect(result).toEqual(CondominiumPresenter.toObject(condominium));
+      expect(result).toEqual(CondominiumPresenter.present(condominium));
     });
 
     it('should throw InternalServerErrorException on error', async () => {
@@ -128,7 +135,7 @@ describe('CondominiumController', () => {
         condominium.getId(),
         administrator.id,
       );
-      expect(result).toEqual(CondominiumPresenter.toObject(condominium));
+      expect(result).toEqual(CondominiumPresenter.present(condominium));
     });
 
     it('should throw NotFoundException if condominium is not found', async () => {
@@ -182,7 +189,7 @@ describe('CondominiumController', () => {
       const result = await controller.getCondominiumInfo(userFromRequest);
 
       expect(getCondominiumByIdUseCase.execute).toHaveBeenCalledWith(condominium.getId());
-      expect(result).toEqual(CondominiumPresenter.toObject(condominium));
+      expect(result).toEqual(CondominiumPresenter.present(condominium));
     });
 
     it('should throw InternalServerErrorException on unexpected error', async () => {

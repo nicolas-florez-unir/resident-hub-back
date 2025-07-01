@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { StorageStrategy } from 'src/modules/files/domain/strategies/storage.strategy';
+import { StorageStrategy } from '@files/domain/strategies/storage.strategy';
 import { CondominiumEntity } from '@condominium/domain/entities/condominium.entity';
 
 @Injectable()

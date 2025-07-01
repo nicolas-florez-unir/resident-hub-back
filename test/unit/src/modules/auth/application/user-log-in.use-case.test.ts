@@ -2,8 +2,8 @@ import { UserLogInUseCase } from '@auth/application/use-cases/user-log-in.use-ca
 import { InvalidCredentialsException } from '@auth/domain/exceptions/invalid-credentials.exception';
 import { Test, TestingModule } from '@nestjs/testing';
 import { GetUserByEmailUseCase } from '@user/application/use-cases/get-user-by-email.use-case';
-import { UserEntity } from '@user/domain/entities/User.entity';
-import { UserRole } from '@user/domain/enums/UserRole.enum';
+import { UserEntity } from '@user/domain/entities/user.entity';
+import { UserRole } from '@user/domain/enums/user-role.enum';
 import { UserNotFoundException } from '@user/domain/exceptions/user-not-found.exception';
 import { UserRepository } from '@user/domain/repositories/user.repository';
 import * as bcrypt from 'bcrypt';

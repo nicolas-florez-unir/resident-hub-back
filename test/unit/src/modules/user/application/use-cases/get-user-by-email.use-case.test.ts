@@ -1,7 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { GetUserByEmailUseCase } from '@user/application/use-cases/get-user-by-email.use-case';
 import { UserRepository } from '@user/domain/repositories/user.repository';
-import { UserEntity } from '@user/domain/entities/User.entity';
+import { UserEntity } from '@user/domain/entities/user.entity';
 import { UserNotFoundException } from '@user/domain/exceptions/user-not-found.exception';
 import { UserFactory } from 'test/utils/factories/user.factory';
 

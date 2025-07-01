@@ -1,6 +1,6 @@
-import { UserRoleMapper } from '@user/infrastructure/mappers/user-role.mapper';
+import { UserRoleMapper } from '@user/infrastructure/mappers/prisma/user-role.mapper';
 import { UserRole as UserRolePrisma } from '@prisma/client';
-import { UserRole as UserRoleDomain } from '@user/domain/enums/UserRole.enum';
+import { UserRole as UserRoleDomain } from '@user/domain/enums/user-role.enum';
 
 describe('UserRoleMapper', () => {
   describe('toDomain', () => {

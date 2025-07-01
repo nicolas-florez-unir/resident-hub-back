@@ -1,8 +1,8 @@
-import { StorageStrategy } from '../../domain/strategies/storage.strategy';
+import { Logger } from '@nestjs/common';
 import { promises as fs } from 'fs';
 import * as crypto from 'crypto';
 import * as path from 'path';
-import { Logger } from '@nestjs/common';
+import { StorageStrategy } from '../../domain/strategies/storage.strategy';
 
 export class LocalStorageStrategy extends StorageStrategy {
   private readonly logger = new Logger(LocalStorageStrategy.name);

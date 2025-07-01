@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { CondominiumRepository } from '../../domain/repositories/condominium.repository';
 import { CondominiumEntity } from '../../domain/entities/condominium.entity';
-import { CreateCondominiumDto } from '../../domain/dtos/CreateCondominium.dto';
+import { CreateCondominiumDto } from '../../domain/dtos/create-condominium.dto';
 
 @Injectable()
 export class CreateCondominiumUseCase {

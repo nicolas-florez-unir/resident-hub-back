@@ -1,19 +1,19 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { AuthController } from '@auth/infrastructure/controllers/auth.controller';
 import { UserSignUpUseCase } from '@auth/application/use-cases/user-sign-up.use-case';
-import { UserSignUpRequest } from '@auth/infrastructure/requests/UserSignUp.request';
-import { UserEntity } from '@user/domain/entities/User.entity';
+import { UserSignUpRequest } from '@auth/infrastructure/requests/user-sign-up.request';
+import { UserEntity } from '@user/domain/entities/user.entity';
 import { UserLogInUseCase } from '@auth/application/use-cases/user-log-in.use-case';
-import { UserPresenter } from '@auth/infrastructure/presenters/User.presenter';
-import { UserLogInRequest } from '@auth/infrastructure/requests/UserLogIn.request';
+import { UserPresenter } from '@auth/infrastructure/presenters/user.presenter';
+import { UserLogInRequest } from '@auth/infrastructure/requests/user-log-in.request';
 import { ConflictException, HttpException, HttpStatus } from '@nestjs/common';
 import { ApplicationJwtService } from '@auth/infrastructure/jwt/application-jwt.service';
 import { JwtModule } from '@nestjs/jwt';
-import { CreateUserDto } from '@user/domain/dtos/CreateUserDto';
+import { CreateUserDto } from '@user/domain/dtos/create-user.dto';
 import { GetUserByIdUseCase } from '@user/application/use-cases/get-user-by-id.use-case';
 import { UserFactory } from 'test/utils/factories/user.factory';
 import { CondominiumFactory } from 'test/utils/factories/condominium.factory';
-import { UserRole } from '@user/domain/enums/UserRole.enum';
+import { UserRole } from '@user/domain/enums/user-role.enum';
 import { UserAlreadyExistException } from '@user/domain/exceptions/user-already-exist.exception';
 import { EntityNotFoundException } from '@common/exceptions/entity-not-found.exception';
 import { Response } from 'express';
@@ -141,7 +141,7 @@ describe('AuthController', () => {
 
       const response = await authController.signUp(request);
 
-      expect(response).toEqual(UserPresenter.toObject(userEntity));
+      expect(response).toEqual(UserPresenter.present(userEntity));
     });
 
     it('should throw an HttpException if UserSignUpUseCase throws an unknown error', async () => {

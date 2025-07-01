@@ -1,7 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { JwtModule, JwtService as NestJwtService } from '@nestjs/jwt'; // Importa el servicio real de NestJS
 import { ApplicationJwtService } from '@auth/infrastructure/jwt/application-jwt.service';
-import { UserRole } from '@user/domain/enums/UserRole.enum';
+import { UserRole } from '@user/domain/enums/user-role.enum';
 
 describe('JwtService', () => {
   let applicationJwtService: ApplicationJwtService;

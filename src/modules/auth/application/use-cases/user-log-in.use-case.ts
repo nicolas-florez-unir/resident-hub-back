@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
 
 import { InvalidCredentialsException } from '@auth/domain/exceptions/invalid-credentials.exception';
-import { UserEntity } from '@user/domain/entities/User.entity';
+import { UserEntity } from '@user/domain/entities/user.entity';
 import { GetUserByEmailUseCase } from '@user/application/use-cases/get-user-by-email.use-case';
 import { UserNotFoundException } from '@user/domain/exceptions/user-not-found.exception';
 

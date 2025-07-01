@@ -6,7 +6,7 @@ import {
   Post,
   UseGuards,
 } from '@nestjs/common';
-import { CreateNewClientRequest } from '../requests/CreateNewClient.request';
+import { CreateNewClientRequest } from '../requests/create-new-client.request';
 import { CreateNewClientUseCase } from '../../application/use-cases/create-new-client.use-case';
 import { PrivateApiGuard } from '../guards/PrivateApi.guard';
 import { UserAlreadyExistException } from '@user/domain/exceptions/user-already-exist.exception';

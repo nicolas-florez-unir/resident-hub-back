@@ -2,13 +2,15 @@ import { Injectable, Logger } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
 
 import { PrismaService } from '@common/database/prisma/prisma.service';
-import { UserEntity } from '@user/domain/entities/User.entity';
-import { CreateUserDto } from '@user/domain/dtos/CreateUserDto';
+import { UserEntity } from '@user/domain/entities/user.entity';
+import { CreateUserDto } from '@user/domain/dtos/create-user.dto';
 import { UserRepository } from '@user/domain/repositories/user.repository';
 import { envs } from '@common/env/env.validation';
 import { PrismaQueryError } from 'prisma/enums/PrismaQueryErrors.enum';
-import { UserRoleMapper } from '../mappers/user-role.mapper';
+import { UserRoleMapper } from '../mappers/prisma/user-role.mapper';
 import { UserAlreadyExistException } from '@user/domain/exceptions/user-already-exist.exception';
+import { UserRole } from '@user/domain/enums/user-role.enum';
+import { PrismaUserMapper } from '../mappers/prisma/prisma-user.mapper';
 
 @Injectable()
 export class PrismaUserRepository extends UserRepository {
@@ -32,18 +34,7 @@ export class PrismaUserRepository extends UserRepository {
         },
       });
 
-      return new UserEntity(
-        newUser.id,
-        newUser.condominium_id,
-        newUser.email,
-        newUser.password,
-        newUser.first_name,
-        newUser.last_name,
-        newUser.phone,
-        UserRoleMapper.toDomain(newUser.role),
-        newUser.created_at,
-        newUser.updated_at,
-      );
+      return PrismaUserMapper.toDomain(newUser);
     } catch (error) {
       if (error.code === PrismaQueryError.UniqueConstraintViolation) {
         throw new UserAlreadyExistException(
@@ -66,18 +57,7 @@ export class PrismaUserRepository extends UserRepository {
 
     if (!user) return null;
 
-    return new UserEntity(
-      user.id,
-      user.condominium_id,
-      user.email,
-      user.password,
-      user.first_name,
-      user.last_name,
-      user.phone,
-      UserRoleMapper.toDomain(user.role),
-      user.created_at,
-      user.updated_at,
-    );
+    return PrismaUserMapper.toDomain(user);
   }
 
   async findById(id: number): Promise<UserEntity | null> {
@@ -89,18 +69,7 @@ export class PrismaUserRepository extends UserRepository {
 
     if (!user) return null;
 
-    return new UserEntity(
-      user.id,
-      user.condominium_id,
-      user.email,
-      user.password,
-      user.first_name,
-      user.last_name,
-      user.phone,
-      UserRoleMapper.toDomain(user.role),
-      user.created_at,
-      user.updated_at,
-    );
+    return PrismaUserMapper.toDomain(user);
   }
 
   async update(user: UserEntity): Promise<UserEntity | null> {
@@ -118,18 +87,7 @@ export class PrismaUserRepository extends UserRepository {
         },
       });
 
-      return new UserEntity(
-        updatedUser.id,
-        updatedUser.condominium_id,
-        updatedUser.email,
-        updatedUser.password,
-        updatedUser.first_name,
-        updatedUser.last_name,
-        updatedUser.phone,
-        UserRoleMapper.toDomain(updatedUser.role),
-        updatedUser.created_at,
-        updatedUser.updated_at,
-      );
+      return PrismaUserMapper.toDomain(updatedUser);
     } catch (error) {
       if (error.code === PrismaQueryError.RecordsNotFound) {
         return null;
@@ -155,17 +113,31 @@ export class PrismaUserRepository extends UserRepository {
 
     if (!user) return null;
 
-    return new UserEntity(
-      user.id,
-      user.condominium_id,
-      user.email,
-      user.password,
-      user.first_name,
-      user.last_name,
-      user.phone,
-      UserRoleMapper.toDomain(user.role),
-      user.created_at,
-      user.updated_at,
-    );
+    return PrismaUserMapper.toDomain(user);
+  }
+
+  async findOwnersByCondominiumId(condominiumId: number): Promise<UserEntity[]> {
+    try {
+      const users = await this.prisma.user.findMany({
+        where: {
+          condominium_id: condominiumId,
+          role: {
+            in: [UserRole.HouseOwner],
+          },
+        },
+      });
+
+      return users.map(PrismaUserMapper.toDomain);
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async delete(id: number): Promise<void> {
+    await this.prisma.user.delete({
+      where: {
+        id,
+      },
+    });
   }
 }

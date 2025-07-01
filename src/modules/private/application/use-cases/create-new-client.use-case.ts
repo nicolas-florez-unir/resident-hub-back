@@ -2,9 +2,9 @@ import { Injectable } from '@nestjs/common';
 import { CreateCondominiumUseCase } from '@condominium/application/use-cases/create-condominium.use-case';
 import { CreateUserUseCase } from '@user/application/use-cases/create-user.use-case';
 import { AssignAdministratorUseCase } from '@condominium/application/use-cases/assign-administrator.use-case';
-import { CreateCondominiumDto } from '@condominium/domain/dtos/CreateCondominium.dto';
-import { CreateUserDto } from '@user/domain/dtos/CreateUserDto';
-import { UserRole } from '@user/domain/enums/UserRole.enum';
+import { CreateCondominiumDto } from '@condominium/domain/dtos/create-condominium.dto';
+import { CreateUserDto } from '@user/domain/dtos/create-user.dto';
+import { UserRole } from '@user/domain/enums/user-role.enum';
 import { envs } from '@common/env/env.validation';
 
 interface CreateNewClientInterface {

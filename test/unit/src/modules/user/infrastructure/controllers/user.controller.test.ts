@@ -3,14 +3,16 @@ import { UserController } from '@user/infrastructure/controllers/user.controller
 import { UserRepository } from '@user/domain/repositories/user.repository';
 import { AuthGuard } from '@common/guards/auth.guard';
 import { UserFromRequestInterface } from '@common/interfaces/user-from-request.interface';
-import { UserPresenter } from '@auth/infrastructure/presenters/User.presenter';
+import { UserPresenter } from '@auth/infrastructure/presenters/user.presenter';
 import { GetUserByIdUseCase } from '@user/application/use-cases/get-user-by-id.use-case';
 import { UpdateUserUseCase } from '@user/application/use-cases/update-user.use-case';
 import { UserFactory } from 'test/utils/factories/user.factory';
-import { UpdateUserRequest } from '@user/infrastructure/requests/UpdateUser.request';
-import { UserEntity } from '@user/domain/entities/User.entity';
+import { UpdateUserRequest } from '@user/infrastructure/requests/update-user.request';
+import { UserEntity } from '@user/domain/entities/user.entity';
 import { CondominiumFactory } from 'test/utils/factories/condominium.factory';
-import { UserRole } from '@user/domain/enums/UserRole.enum';
+import { UserRole } from '@user/domain/enums/user-role.enum';
+import { CreateUserUseCase } from '@user/application/use-cases';
+import { DeleteUserUseCase } from '@user/application/use-cases/delete-user.use-case';
 
 describe('UserController', () => {
   let userController: UserController;
@@ -28,6 +30,8 @@ describe('UserController', () => {
       providers: [
         GetUserByIdUseCase,
         UpdateUserUseCase,
+        CreateUserUseCase,
+        DeleteUserUseCase,
         { provide: UserRepository, useValue: userRepository },
       ],
     })
@@ -54,7 +58,7 @@ describe('UserController', () => {
       const result = await userController.getUserInfo(mockUserFromRequest);
 
       expect(userRepository.findById).toHaveBeenCalledWith(1);
-      expect(result).toEqual(UserPresenter.toObject(mockUser));
+      expect(result).toEqual(UserPresenter.present(mockUser));
     });
 
     it('should throw an error when user does not exist', async () => {
@@ -104,12 +108,12 @@ describe('UserController', () => {
       jest.spyOn(getUserByIdUseCase, 'execute').mockResolvedValue(mockUser);
       jest.spyOn(updateUserUseCase, 'execute').mockResolvedValue(userUpdated);
 
-      const result = await userController.updateUser(
+      const result = await userController.updateUserFromRequest(
         mockUserFromRequest,
         updateUserRequest,
       );
 
-      expect(result).toEqual(UserPresenter.toObject(userUpdated));
+      expect(result).toEqual(UserPresenter.present(userUpdated));
     });
 
     it('should throw an error when user does not exist', async () => {
@@ -123,7 +127,7 @@ describe('UserController', () => {
       userRepository.findById.mockResolvedValue(null);
 
       await expect(
-        userController.updateUser(mockUserFromRequest, mockUser),
+        userController.updateUserFromRequest(mockUserFromRequest, mockUser),
       ).rejects.toThrow();
       expect(userRepository.findById).toHaveBeenCalledWith(1);
     });

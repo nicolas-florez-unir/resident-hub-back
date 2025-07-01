@@ -1,11 +1,11 @@
 import { PrismaService } from '@common/database/prisma/prisma.service';
 import { Logger } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
-import { CreateUserDto } from '@user/domain/dtos/CreateUserDto';
-import { UserEntity } from '@user/domain/entities/User.entity';
-import { UserRole } from '@user/domain/enums/UserRole.enum';
+import { CreateUserDto } from '@user/domain/dtos/create-user.dto';
+import { UserEntity } from '@user/domain/entities/user.entity';
+import { UserRole } from '@user/domain/enums/user-role.enum';
 import { UserAlreadyExistException } from '@user/domain/exceptions/user-already-exist.exception';
-import { PrismaUserRepository } from 'src/modules/user/infrastructure/repositories/prisma.user.repository';
+import { PrismaUserRepository } from '@user/infrastructure/repositories/prisma-user.repository';
 import { CondominiumFactory } from 'test/utils/factories/condominium.factory';
 import { UserFactory } from 'test/utils/factories/user.factory';
 import { PrismaUtils } from 'test/utils/PrismaUtils';

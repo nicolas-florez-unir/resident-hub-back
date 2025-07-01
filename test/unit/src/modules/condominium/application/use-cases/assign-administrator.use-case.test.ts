@@ -3,7 +3,7 @@ import { CondominiumNotFoundException } from '@condominium/domain/exceptions/con
 import { CondominiumRepository } from '@condominium/domain/repositories/condominium.repository';
 import { Test, TestingModule } from '@nestjs/testing';
 import { GetAdministratorByIdUseCase } from '@user/application/use-cases/get-administrator-by-id.use-case';
-import { UserRole } from '@user/domain/enums/UserRole.enum';
+import { UserRole } from '@user/domain/enums/user-role.enum';
 import { UserNotFoundException } from '@user/domain/exceptions/user-not-found.exception';
 import { CondominiumFactory } from 'test/utils/factories/condominium.factory';
 import { UserFactory } from 'test/utils/factories/user.factory';

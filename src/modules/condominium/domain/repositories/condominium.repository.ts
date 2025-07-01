@@ -1,4 +1,4 @@
-import { CreateCondominiumDto } from '../dtos/CreateCondominium.dto';
+import { CreateCondominiumDto } from '../dtos/create-condominium.dto';
 import { CondominiumEntity } from '../entities/condominium.entity';
 
 export abstract class CondominiumRepository {

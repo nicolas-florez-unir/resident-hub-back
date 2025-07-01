@@ -1,8 +1,8 @@
 import { UserSignUpUseCase } from '@auth/application/use-cases/user-sign-up.use-case';
-import { UserEntity } from 'src/modules/user/domain/entities/User.entity';
+import { UserEntity } from '@user/domain/entities/user.entity';
 import { Test, TestingModule } from '@nestjs/testing';
 import { UserRepository } from '@user/domain/repositories/user.repository';
-import { CreateUserDto } from '@user/domain/dtos/CreateUserDto';
+import { CreateUserDto } from '@user/domain/dtos/create-user.dto';
 import { CreateUserUseCase } from '@user/application/use-cases/create-user.use-case';
 import { GetCondominiumByIdUseCase } from '@condominium/application/use-cases/get-condominium-by-id.use-case';
 import { CondominiumRepository } from '@condominium/domain/repositories/condominium.repository';
